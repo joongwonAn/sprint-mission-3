@@ -48,7 +48,6 @@ public class DiscodeitApplication {
 		MessageRepository messageRepository = new FileMessageRepository();
 
 		// 서비스 초기화
-		// TODO : context에서 Bean을 조회하여 각 서비스 구현체 할당 코드 작성하세요.
 		UserService userService = context.getBean(UserService.class);
 		ChannelService channelService = context.getBean(ChannelService.class);
 		MessageService messageService = context.getBean(MessageService.class);
