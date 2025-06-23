@@ -14,26 +14,22 @@ public class UserStatus {
     //
     private UUID userId;
 
-    // 생성자
     public UserStatus(UUID userId) {
+        this.userId = userId;
+
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
-
-        this.userId = userId;
     }
 
-    public void refreshStatus() {
-        this.updatedAt = Instant.now();
-    }
+//    public void refreshStatus() {
+//        this.updatedAt = Instant.now();
+//    }
 
     // 유저가 현재 접속 중인지 판단 -> updatedAt이 현재로부터 5분 이내면 접속 중
     public boolean isOnline() {
-        if (this.updatedAt == null) {
-            return false;
-        }
 
         Instant fiveMinutesAgo = Instant.now().minusSeconds(60 * 5);
-        return fiveMinutesAgo.isBefore(this.updatedAt);
+        return fiveMinutesAgo.isAfter(this.updatedAt);
     }
 }
