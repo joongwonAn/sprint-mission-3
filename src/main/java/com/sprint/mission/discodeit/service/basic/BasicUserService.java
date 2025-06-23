@@ -15,12 +15,18 @@ import java.util.UUID;
 public class BasicUserService implements UserService {
 
     private final UserRepository userRepository;
-
+//    private final UserMapper userMapper;
     @Override
     public User create(String username, String email, String password) {
         User user = new User(username, email, password);
         return userRepository.save(user);
     }
+
+    /*@Override
+    public User create(UserCreateDto userCreateDto) {
+        User createdUser = userMapper.userCreatedDtoToUser(userCreateDto);
+
+    }*/
 
     @Override
     public User find(UUID userId) {
