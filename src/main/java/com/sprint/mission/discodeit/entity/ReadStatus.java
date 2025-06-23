@@ -16,7 +16,6 @@ public class ReadStatus {
     private UUID channelId;
 
     public ReadStatus(UUID userId, UUID channelId) {
-
         this.userId = userId;
         this.channelId = channelId;
 

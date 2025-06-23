@@ -15,7 +15,6 @@ public class UserStatus {
     private UUID userId;
 
     public UserStatus(UUID userId) {
-
         this.userId = userId;
 
         this.id = UUID.randomUUID();
