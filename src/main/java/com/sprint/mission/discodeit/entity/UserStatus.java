@@ -15,6 +15,7 @@ public class UserStatus {
     private UUID userId;
 
     public UserStatus(UUID userId) {
+
         this.userId = userId;
 
         this.id = UUID.randomUUID();
@@ -23,6 +24,7 @@ public class UserStatus {
     }
 
     public void refreshStatus() {
+
         this.updatedAt = Instant.now();
     }
 

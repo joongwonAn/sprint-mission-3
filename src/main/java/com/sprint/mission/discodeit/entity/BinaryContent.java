@@ -15,6 +15,7 @@ public class BinaryContent {
     private UUID messageId;
 
     public BinaryContent(UUID userId, UUID messageId) {
+
         this.userId = userId;
         this.messageId = messageId;
 

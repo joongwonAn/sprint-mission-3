@@ -22,6 +22,7 @@ public class User implements Serializable {
 
 
     public User(String username, String email, String password) {
+
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         //
@@ -31,6 +32,7 @@ public class User implements Serializable {
     }
 
     public void update(String newUsername, String newEmail, String newPassword) {
+
         boolean anyValueUpdated = false;
         if (newUsername != null && !newUsername.equals(this.username)) {
             this.username = newUsername;
