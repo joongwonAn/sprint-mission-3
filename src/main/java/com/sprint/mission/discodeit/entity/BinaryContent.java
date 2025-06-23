@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.dto.BinaryContentType;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -15,8 +16,10 @@ public class BinaryContent {
     private  UUID messageId;
 
     private byte[] bytes;
+    private String fileName;
+    private BinaryContentType fileType;
 
-    public BinaryContent(UUID userId, UUID messageId, byte[] bytes) {
+    public BinaryContent(UUID userId, UUID messageId, byte[] bytes, String fileName, BinaryContentType fileType) {
         this.userId = userId;
         this.messageId = messageId;
 
@@ -24,5 +27,7 @@ public class BinaryContent {
         this.createdAt = Instant.now();
 
         this.bytes = bytes;
+        this.fileName = fileName;
+        this.fileType = fileType;
     }
 }

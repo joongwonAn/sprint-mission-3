@@ -1,3 +1,4 @@
+/*
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.entity.Channel;
@@ -51,3 +52,4 @@ public class JavaApplication {
         messageCreateTest(messageService, channel, user);
     }
 }
+*/

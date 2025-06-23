@@ -19,13 +19,21 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    public User(String username, String email, String password) {
+    private UUID profileImageId;
+
+    public User(String username, String email, String password, UUID profileImageId) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         //
         this.username = username;
         this.email = email;
         this.password = password;
+
+        this.profileImageId = profileImageId;
+    }
+
+    public void setProfileImageId(UUID profileImageId) {
+        this.profileImageId = profileImageId;
     }
 
     public void update(String newUsername, String newEmail, String newPassword) {

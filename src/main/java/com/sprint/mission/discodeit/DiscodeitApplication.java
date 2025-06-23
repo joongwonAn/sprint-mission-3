@@ -1,21 +1,15 @@
 package com.sprint.mission.discodeit;
 
+import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.ChannelRepository;
-import com.sprint.mission.discodeit.repository.MessageRepository;
-import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
-import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
-import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import com.sprint.mission.discodeit.repository.*;
+import com.sprint.mission.discodeit.repository.file.*;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.basic.BasicChannelService;
-import com.sprint.mission.discodeit.service.basic.BasicMessageService;
-import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -24,8 +18,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class DiscodeitApplication {
 
 	static User setupUser(UserService userService) {
-		User user = userService.create("woody", "woody@codeit.com", "woody1234");
-		return user;
+		UserCreateDto userCreateDto = new UserCreateDto(
+				"woody",
+				"woody@codeit.com",
+				"woody1234",
+				null
+		);
+		return userService.create(userCreateDto);
 	}
 
 	static Channel setupChannel(ChannelService channelService) {
@@ -44,6 +43,8 @@ public class DiscodeitApplication {
 
 		// 레포지토리 초기화
 		UserRepository userRepository = new FileUserRepository();
+		UserStatusRepository userStatusRepository = new FileUserStatusRepository();
+		BinaryContentRepository binaryContentRepository = new FileBinaryContentRepository();
 		ChannelRepository channelRepository = new FileChannelRepository();
 		MessageRepository messageRepository = new FileMessageRepository();
 
@@ -57,5 +58,6 @@ public class DiscodeitApplication {
 		Channel channel = setupChannel(channelService);
 		// 테스트
 		messageCreateTest(messageService, channel, user);
+
 	}
 }
