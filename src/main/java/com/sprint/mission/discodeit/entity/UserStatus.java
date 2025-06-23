@@ -22,9 +22,9 @@ public class UserStatus {
         this.updatedAt = Instant.now();
     }
 
-//    public void refreshStatus() {
-//        this.updatedAt = Instant.now();
-//    }
+    public void refreshStatus() {
+        this.updatedAt = Instant.now();
+    }
 
     // 유저가 현재 접속 중인지 판단 -> updatedAt이 현재로부터 5분 이내면 접속 중
     public boolean isOnline() {

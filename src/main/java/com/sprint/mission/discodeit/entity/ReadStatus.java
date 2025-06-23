@@ -24,8 +24,11 @@ public class ReadStatus {
         this.updatedAt = Instant.now();
     }
 
-    public boolean isUnread() {
+    public void refreshStatus() {
+        this.updatedAt = Instant.now();
+    }
 
-
+    public Instant getLastReadTime() {
+        return this.updatedAt;
     }
 }
