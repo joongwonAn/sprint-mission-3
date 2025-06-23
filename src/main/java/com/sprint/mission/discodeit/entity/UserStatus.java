@@ -11,7 +11,7 @@ public class UserStatus {
     private UUID id;
     private Instant createdAt;
     private Instant updatedAt;
-    //
+
     private UUID userId;
 
     // 생성자

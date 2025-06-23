@@ -13,6 +13,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BasicUserService implements UserService {
+
     private final UserRepository userRepository;
 
     @Override

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
+
     User create(String username, String email, String password);
     User find(UUID userId);
     List<User> findAll();

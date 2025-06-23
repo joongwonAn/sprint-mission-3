@@ -14,6 +14,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BasicChannelService implements ChannelService {
+
     private final ChannelRepository channelRepository;
 
     @Override

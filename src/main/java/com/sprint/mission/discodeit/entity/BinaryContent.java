@@ -14,7 +14,6 @@ public class BinaryContent {
     private  UUID userId;
     private  UUID messageId;
 
-    // 바이너리 데이터
     private byte[] bytes;
 
     public BinaryContent(UUID userId, UUID messageId, byte[] bytes) {

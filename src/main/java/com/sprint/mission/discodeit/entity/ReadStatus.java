@@ -12,7 +12,7 @@ public class ReadStatus {
     private Instant createdAt;
     private Instant updatedAt;
     private Instant readAt;
-    //
+
     private UUID userId;
     private UUID channelId;
 

@@ -15,6 +15,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BasicMessageService implements MessageService {
+
     private final MessageRepository messageRepository;
 
     private final ChannelRepository channelRepository;
