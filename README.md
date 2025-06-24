@@ -55,18 +55,13 @@
 
 ### 자주 쓰이는 Stream API 문법
 
-| **메서드** | **설명** | **예시 코드** |
-| --- | --- | --- |
-| **stream()** | Stream 객체 생성 | `list.stream()` |
-| **filter()** | 조건에 맞는 데이터만 추출 | `.filter(x -> x > 10)` |
-| **map()** | 각 요소를 변환 | `.map(x -> x * 2)` |
-| **sorted()** | 정렬 | `.sorted()` |
-| **anyMatch()** | 조건에 맞는 요소가 하나라도 있으면 true | `.anyMatch(x -> x == 3)` |
-| **forEach()** | 각 요소에 작업 수행
-**(최종 연산)** | `.forEach(System.out::println)` |
-| **collect()** | 결과를 컬렉션 등으로 변환
-**(최종 연산)** | `.collect(Collectors.toList())` |
-| **count()** | 요소 개수 세기
-**(최종 연산)** | `.count()` |
-| **findFirst()** | 첫 번째 요소 찾기
-**(최종 연산)** | `.findFirst()` |
+메서드	설명	예시 코드
+stream()	Stream 객체 생성	list.stream()
+filter()	조건에 맞는 데이터만 추출	.filter(x -> x > 10)
+map()	각 요소를 변환	.map(x -> x * 2)
+sorted()	정렬	.sorted()
+anyMatch()	조건에 맞는 요소가 하나라도 있으면 true	.anyMatch(x -> x == 3)
+forEach()	각 요소에 작업 수행 (최종 연산)	.forEach(System.out::println)
+collect()	결과를 컬렉션 등으로 변환 (최종 연산)	.collect(Collectors.toList())
+count()	요소 개수 세기 (최종 연산)	.count()
+findFirst()	첫 번째 요소 찾기 (최종 연산)	.findFirst()
