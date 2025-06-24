@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.UserCreateDto;
+import com.sprint.mission.discodeit.dto.UserStatusDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -14,6 +15,7 @@ import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -64,14 +66,31 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User find(UUID userId) {
-        return userRepository.findById(userId)
+    public UserStatusDto find(UUID userId) {
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+
+        UserStatus userStatus = userStatusRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("UserStatus with user id " + userId + " not found"));
+
+        return userMapper.toDto(user, userStatus);
     }
 
+    // 목표: 모든 사용자를 불러오고, 각 사용자마다 온라인 상태도 보여줄거임
+    // -> user, userStatus 필요
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserStatusDto> findAll() {
+
+        List<User> users = userRepository.findAll();
+        List<UserStatusDto> userStatusDtos = new ArrayList<>();
+        for (User user : users) {
+            UserStatus userStatus = userStatusRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new NoSuchElementException("UserStatus with user id " + user.getId() + " not found"));
+            userStatusDtos.add(userMapper.toDto(user, userStatus));
+        }
+
+        return userStatusDtos;
     }
 
     @Override

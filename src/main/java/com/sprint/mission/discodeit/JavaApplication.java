@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit;
 import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.BinaryContentType;
 import com.sprint.mission.discodeit.dto.UserCreateDto;
+import com.sprint.mission.discodeit.dto.UserStatusDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
@@ -12,6 +13,8 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.UUID;
 
 public class JavaApplication {
 
@@ -49,9 +52,27 @@ public class JavaApplication {
                 binaryContentDto // 없애고 싶으면 null 넣기
         );
 
-        // 생성 테스트
-        User user = userService.create(userCreateDto);
-        System.out.println("[생성 완료] ID: " + user.getId());
-        System.out.println("[프로필 이미지 ID] " + user.getProfileImageId());
+        // create TEST
+        User createdUser = userService.create(userCreateDto);
+        UUID userId = createdUser.getId();
+        System.out.println("\n[생성 완료] ID: " + userId);
+        System.out.println("[프로필 이미지 ID] " + createdUser.getProfileImageId());
+
+        // find TEST
+        UserStatusDto foundUser = userService.find(userId);
+        System.out.println("\n[find 결과]");
+        System.out.println("ID: " + foundUser.getId());
+        System.out.println("Username: " + foundUser.getUsername());
+        System.out.println("Email: " + foundUser.getEmail());
+        System.out.println("ProfileImageId: " + foundUser.getProfileImageId());
+
+        // findAll TEST
+        List<UserStatusDto> allUsers = userService.findAll();
+        System.out.println("\n[findAll 결과]");
+        for (UserStatusDto dto : allUsers) {
+            System.out.println("→ ID: " + dto.getId() + ", Username: " + dto.getUsername()
+                    + ", Email: " + dto.getEmail()
+                    + ", Online: " + dto.isOnline());
+        }
     }
 }
