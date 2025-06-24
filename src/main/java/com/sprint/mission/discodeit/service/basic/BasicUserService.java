@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserStatusDto;
+import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -93,11 +94,21 @@ public class BasicUserService implements UserService {
         return userStatusDtos;
     }
 
-    @Override
+    /*@Override
     public User update(UUID userId, String newUsername, String newEmail, String newPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         user.update(newUsername, newEmail, newPassword);
+        return userRepository.save(user);
+    }*/
+
+    @Override
+    public User update(UserUpdateDto userUpdateDto) {
+
+        User user = userRepository.findById(userUpdateDto.getId())
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userUpdateDto.getId() + " not found"));
+
+        userMapper.updateEntity(user, userUpdateDto);
         return userRepository.save(user);
     }
 

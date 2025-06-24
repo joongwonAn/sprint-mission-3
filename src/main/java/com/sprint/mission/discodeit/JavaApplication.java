@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
+import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContentType;
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserStatusDto;
@@ -74,5 +75,21 @@ public class JavaApplication {
                     + ", Email: " + dto.getEmail()
                     + ", Online: " + dto.isOnline());
         }
+
+        // update TEST
+        UserUpdateDto updateDto = new UserUpdateDto(
+                userId, // 어떤 유저를 수정할지 지정
+                "buzz", // 새로운 username
+                "buzz@codeit.com", // 새로운 email
+                "buzz1234", // 새로운 password
+                createdUser.getProfileImageId() // 기존 이미지 그대로 사용
+        );
+        User updatedUser = userService.update(updateDto);
+
+        System.out.println("\n[update 결과]");
+        System.out.println("ID: " + updatedUser.getId());
+        System.out.println("Username: " + updatedUser.getUsername());
+        System.out.println("Email: " + updatedUser.getEmail());
+        System.out.println("ProfileImageId: " + updatedUser.getProfileImageId());
     }
 }

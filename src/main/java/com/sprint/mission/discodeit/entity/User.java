@@ -33,7 +33,7 @@ public class User implements Serializable {
         this.profileImageId = profileImageId;
     }
 
-    public void update(String newUsername, String newEmail, String newPassword) {
+    public void update(String newUsername, String newEmail, String newPassword, UUID newProfileImageId) {
         boolean anyValueUpdated = false;
         if (newUsername != null && !newUsername.equals(this.username)) {
             this.username = newUsername;
@@ -45,6 +45,10 @@ public class User implements Serializable {
         }
         if (newPassword != null && !newPassword.equals(this.password)) {
             this.password = newPassword;
+            anyValueUpdated = true;
+        }
+        if (newProfileImageId != null && !newProfileImageId.equals(this.profileImageId)) {
+            this.profileImageId = newProfileImageId;
             anyValueUpdated = true;
         }
 

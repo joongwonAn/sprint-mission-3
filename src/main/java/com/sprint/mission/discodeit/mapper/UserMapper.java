@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.mapper;
 
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserStatusDto;
+import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import org.springframework.stereotype.Component;
@@ -28,5 +29,10 @@ public class UserMapper {
                 user.getProfileImageId(),
                 userStatus != null && userStatus.isOnline()
         );
+    }
+
+    public void updateEntity(User user, UserUpdateDto dto) {
+
+        user.update(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getProfileImageId());
     }
 }

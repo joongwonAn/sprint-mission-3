@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserStatusDto;
+import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 
@@ -17,7 +18,7 @@ public interface UserService {
 
     List<UserStatusDto> findAll();
 
-    User update(UUID userId, String newUsername, String newEmail, String newPassword);
+    User update(UserUpdateDto userUpdateDto);
 
     void delete(UUID userId);
 }
