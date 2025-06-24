@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.dto;
+package com.sprint.mission.discodeit.entity;
 
 public enum BinaryContentType {
     USER_PROFILE_IMAGE,

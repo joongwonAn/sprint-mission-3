@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.dto.BinaryContentType;
 import lombok.Getter;
 
 import java.io.Serializable;
