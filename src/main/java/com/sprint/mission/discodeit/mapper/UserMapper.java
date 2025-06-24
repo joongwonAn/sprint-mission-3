@@ -2,11 +2,8 @@ package com.sprint.mission.discodeit.mapper;
 
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserStatusDto;
-import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.service.UserService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,11 +32,6 @@ public class UserMapper {
                 user.getProfileImageId(),
                 userStatus.getUpdatedAt()
         );
-    }
-
-    public void updateEntity(User user, UserUpdateDto dto) {
-
-        user.update(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getProfileImageId());
     }
 
 }

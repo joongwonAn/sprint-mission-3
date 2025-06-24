@@ -101,7 +101,28 @@ public class BasicUserService implements UserService {
         User user = userRepository.findById(userUpdateDto.getId())
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userUpdateDto.getId() + " not found"));
 
-        userMapper.updateEntity(user, userUpdateDto);
+        boolean anyValueUpdated = false;
+        if (userUpdateDto.getUsername() != null && !userUpdateDto.getUsername().equals(user.getUsername())) {
+            user.setUsername(userUpdateDto.getUsername());
+            anyValueUpdated = true;
+        }
+        if (userUpdateDto.getEmail() != null && !userUpdateDto.getEmail().equals(user.getEmail())) {
+            user.setEmail(userUpdateDto.getEmail());
+            anyValueUpdated = true;
+        }
+        if (userUpdateDto.getPassword() != null && !userUpdateDto.getPassword().equals(user.getPassword())) {
+            user.setPassword(userUpdateDto.getPassword());
+            anyValueUpdated = true;
+        }
+        if (userUpdateDto.getProfileImageId() != null && !userUpdateDto.getProfileImageId().equals(user.getProfileImageId())) {
+            user.setProfileImageId(userUpdateDto.getProfileImageId());
+            anyValueUpdated = true;
+        }
+
+        if (anyValueUpdated) {
+            user.setUpdatedAt(Instant.now());
+        }
+
         return userRepository.save(user);
     }
 

@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Getter
+@Setter
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,7 +34,7 @@ public class User implements Serializable {
         this.profileImageId = profileImageId;
     }
 
-    public void update(String newUsername, String newEmail, String newPassword, UUID newProfileImageId) {
+    /*public void update(String newUsername, String newEmail, String newPassword, UUID newProfileImageId) {
         boolean anyValueUpdated = false;
         if (newUsername != null && !newUsername.equals(this.username)) {
             this.username = newUsername;
@@ -55,5 +56,5 @@ public class User implements Serializable {
         if (anyValueUpdated) {
             this.updatedAt = Instant.now();
         }
-    }
+    }*/
 }
