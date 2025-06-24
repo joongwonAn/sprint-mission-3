@@ -39,3 +39,34 @@
 1. 목표가 무엇인지 정확히 알기
 2. 목표를 달성하기 위해 어떤 정보가 필요한지 정의
 3. 그 정보를 얻기 위한 repository 접근 방법 고민
+
+## 4) Java Stream API
+
+### Stram API란?
+
+- 컬렉션 프레임워크(List, Set 등)에 대해 “데이터 흐름”을 만들고, 
+그 흐름에 여러 연산(filter, map, forEach 등)을 연결해서 데이터를 처리하는 방식
+
+### Stream API 기본 구조
+
+1. Stream 생성
+2. 중간 연산(가공) : filter, map, sorted 등으로 데이터를 변환 (여러 개 연결 가능)
+3. 최종 연산(결과) : forEach(), collect, count 등으로 결과 도출 (최종 연산 후 Stream은 재사용 불가)
+
+### 자주 쓰이는 Stream API 문법
+
+| **메서드** | **설명** | **예시 코드** |
+| --- | --- | --- |
+| **stream()** | Stream 객체 생성 | `list.stream()` |
+| **filter()** | 조건에 맞는 데이터만 추출 | `.filter(x -> x > 10)` |
+| **map()** | 각 요소를 변환 | `.map(x -> x * 2)` |
+| **sorted()** | 정렬 | `.sorted()` |
+| **anyMatch()** | 조건에 맞는 요소가 하나라도 있으면 true | `.anyMatch(x -> x == 3)` |
+| **forEach()** | 각 요소에 작업 수행
+**(최종 연산)** | `.forEach(System.out::println)` |
+| **collect()** | 결과를 컬렉션 등으로 변환
+**(최종 연산)** | `.collect(Collectors.toList())` |
+| **count()** | 요소 개수 세기
+**(최종 연산)** | `.count()` |
+| **findFirst()** | 첫 번째 요소 찾기
+**(최종 연산)** | `.findFirst()` |
