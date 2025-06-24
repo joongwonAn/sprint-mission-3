@@ -33,28 +33,4 @@ public class User implements Serializable {
         //
         this.profileImageId = profileImageId;
     }
-
-    /*public void update(String newUsername, String newEmail, String newPassword, UUID newProfileImageId) {
-        boolean anyValueUpdated = false;
-        if (newUsername != null && !newUsername.equals(this.username)) {
-            this.username = newUsername;
-            anyValueUpdated = true;
-        }
-        if (newEmail != null && !newEmail.equals(this.email)) {
-            this.email = newEmail;
-            anyValueUpdated = true;
-        }
-        if (newPassword != null && !newPassword.equals(this.password)) {
-            this.password = newPassword;
-            anyValueUpdated = true;
-        }
-        if (newProfileImageId != null && !newProfileImageId.equals(this.profileImageId)) {
-            this.profileImageId = newProfileImageId;
-            anyValueUpdated = true;
-        }
-
-        if (anyValueUpdated) {
-            this.updatedAt = Instant.now();
-        }
-    }*/
 }
