@@ -5,10 +5,16 @@ import com.sprint.mission.discodeit.dto.UserStatusDto;
 import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
+
+    public UserMapper() {
+
+    }
 
     public User toEntity(UserCreateDto dto) {
 
@@ -27,7 +33,7 @@ public class UserMapper {
                 user.getUsername(),
                 user.getEmail(),
                 user.getProfileImageId(),
-                userStatus != null && userStatus.isOnline()
+                userStatus.getUpdatedAt()
         );
     }
 

@@ -73,7 +73,7 @@ public class JavaApplication {
         for (UserStatusDto dto : allUsers) {
             System.out.println("→ ID: " + dto.getId() + ", Username: " + dto.getUsername()
                     + ", Email: " + dto.getEmail()
-                    + ", Online: " + dto.isOnline());
+                    + ", Online: " + userService.isOnline(dto));
         }
 
         // update TEST
@@ -99,7 +99,7 @@ public class JavaApplication {
         for (UserStatusDto dto : allUsers2) {
             System.out.println("→ ID: " + dto.getId() + ", Username: " + dto.getUsername()
                     + ", Email: " + dto.getEmail()
-                    + ", Online: " + dto.isOnline());
+                    + ", Online: " + userService.isOnline(dto));
         }
     }
 }

@@ -21,4 +21,6 @@ public interface UserService {
     User update(UserUpdateDto userUpdateDto);
 
     void delete(UUID userId);
+
+    boolean isOnline(UserStatusDto userStatusDto);
 }

@@ -16,6 +16,7 @@ import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -94,14 +95,6 @@ public class BasicUserService implements UserService {
         return userStatusDtos;
     }
 
-    /*@Override
-    public User update(UUID userId, String newUsername, String newEmail, String newPassword) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
-        user.update(newUsername, newEmail, newPassword);
-        return userRepository.save(user);
-    }*/
-
     @Override
     public User update(UserUpdateDto userUpdateDto) {
 
@@ -119,9 +112,18 @@ public class BasicUserService implements UserService {
         }
 
         binaryContentRepository.findAll().stream()
-                        .filter(bcr-> userId.equals(bcr.getUserId()))
-                                .forEach(bcr-> binaryContentRepository.deleteById(bcr.getId()));
+                .filter(bcr-> userId.equals(bcr.getUserId()))
+                .forEach(bcr-> binaryContentRepository.deleteById(bcr.getId()));
         userStatusRepository.deleteById(userId);
         userRepository.deleteById(userId);
+    }
+
+    // 유저가 현재 접속 중인지 판단 -> UserStatus의 updatedAt이 현재로부터 5분 이내면 접속 중
+    @Override
+    public boolean isOnline(UserStatusDto userStatusDto) {
+
+        Instant fiveMinutesAgo = Instant.now().minusSeconds(60 * 5);
+
+        return fiveMinutesAgo.isBefore(userStatusDto.getUpdatedAt());
     }
 }
