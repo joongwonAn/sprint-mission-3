@@ -35,4 +35,5 @@ public class UserMapper {
 
         user.update(dto.getUsername(), dto.getEmail(), dto.getPassword(), dto.getProfileImageId());
     }
+
 }

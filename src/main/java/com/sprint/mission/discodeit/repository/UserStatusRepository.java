@@ -10,5 +10,8 @@ import java.util.UUID;
 public interface UserStatusRepository {
 
     UserStatus save(UserStatus userStatus);
+
     Optional<UserStatus> findByUserId(UUID userId);
+
+    void deleteById(UUID userId);
 }

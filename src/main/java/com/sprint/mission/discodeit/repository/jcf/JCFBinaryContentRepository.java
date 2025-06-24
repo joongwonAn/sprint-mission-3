@@ -31,4 +31,9 @@ public class JCFBinaryContentRepository implements BinaryContentRepository {
     public List<BinaryContent> findAll() {
         return List.of();
     }
+
+    @Override
+    public void deleteById(UUID id) {
+        this.data.remove(id);
+    }
 }

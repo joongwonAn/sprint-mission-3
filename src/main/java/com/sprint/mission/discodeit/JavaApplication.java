@@ -50,7 +50,7 @@ public class JavaApplication {
                 "woody",
                 "woody@codeit.com",
                 "woody1234",
-                binaryContentDto // 없애고 싶으면 null 넣기
+                binaryContentDto
         );
 
         // create TEST
@@ -91,5 +91,15 @@ public class JavaApplication {
         System.out.println("Username: " + updatedUser.getUsername());
         System.out.println("Email: " + updatedUser.getEmail());
         System.out.println("ProfileImageId: " + updatedUser.getProfileImageId());
+
+        // delete TEST
+        userService.delete(userId);
+        List<UserStatusDto> allUsers2 = userService.findAll();
+        System.out.println("\n[After delete : findAll 결과]");
+        for (UserStatusDto dto : allUsers2) {
+            System.out.println("→ ID: " + dto.getId() + ", Username: " + dto.getUsername()
+                    + ", Email: " + dto.getEmail()
+                    + ", Online: " + dto.isOnline());
+        }
     }
 }

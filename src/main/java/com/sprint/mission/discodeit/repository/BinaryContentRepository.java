@@ -11,6 +11,10 @@ import java.util.UUID;
 public interface BinaryContentRepository {
 
     BinaryContent save(BinaryContent content);
+
     Optional<BinaryContent> findById(UUID id);
+
     List<BinaryContent> findAll();
+
+    void deleteById(UUID id);
 }

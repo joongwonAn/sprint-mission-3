@@ -26,4 +26,9 @@ public class JCFUserStatusRepository implements UserStatusRepository {
     public Optional<UserStatus> findByUserId(UUID userId) {
         return Optional.ofNullable(this.data.get(userId));
     }
+
+    @Override
+    public void deleteById(UUID userId) {
+        this.data.remove(userId);
+    }
 }
