@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -18,7 +19,7 @@ public class User implements Serializable {
     private String username;
     private String email;
     private String password;
-
+    @Setter
     private UUID profileImageId;
 
     public User(String username, String email, String password, UUID profileImageId) {
@@ -28,11 +29,7 @@ public class User implements Serializable {
         this.username = username;
         this.email = email;
         this.password = password;
-
-        this.profileImageId = profileImageId;
-    }
-
-    public void setProfileImageId(UUID profileImageId) {
+        //
         this.profileImageId = profileImageId;
     }
 
