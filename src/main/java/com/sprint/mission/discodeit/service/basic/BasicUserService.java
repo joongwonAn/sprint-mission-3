@@ -28,9 +28,15 @@ public class BasicUserService implements UserService {
 
     private final UserRepository userRepository;
     private final UserStatusRepository userStatusRepository;
+    private final BinaryContentRepository binaryContentRepository;
+
     private final UserMapper userMapper;
     private final BinaryContentMapper binaryContentMapper;
-    private final BinaryContentRepository binaryContentRepository;
+
+    private BinaryContent saveProfileImage(BinaryContentCreateDto binaryContentCreateDto, UUID userId) {
+        BinaryContent createdBinaryContent = binaryContentMapper.toEntity(binaryContentCreateDto, userId);
+        return binaryContentRepository.save(createdBinaryContent);
+    }
 
     @Override
     public User create(UserCreateDto userCreateDto) {
@@ -60,11 +66,6 @@ public class BasicUserService implements UserService {
         userStatusRepository.save(userStatus);
         return savedUser;
 
-    }
-
-    private BinaryContent saveProfileImage(BinaryContentCreateDto binaryContentCreateDto, UUID userId) {
-        BinaryContent createdBinaryContent = binaryContentMapper.toEntity(binaryContentCreateDto, userId);
-        return binaryContentRepository.save(createdBinaryContent);
     }
 
     @Override
