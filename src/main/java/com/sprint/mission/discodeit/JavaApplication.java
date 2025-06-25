@@ -24,6 +24,7 @@ public class JavaApplication {
         // 매퍼 및 리포지토리 초기화
         UserMapper userMapper = new UserMapper();
         BinaryContentMapper binaryContentMapper = new BinaryContentMapper();
+
         UserRepository userRepository = new FileUserRepository();
         UserStatusRepository userStatusRepository = new FileUserStatusRepository();
         BinaryContentRepository binaryContentRepository = new FileBinaryContentRepository();
@@ -32,9 +33,9 @@ public class JavaApplication {
         UserService userService = new BasicUserService(
                 userRepository,
                 userStatusRepository,
+                binaryContentRepository,
                 userMapper,
-                binaryContentMapper,
-                binaryContentRepository
+                binaryContentMapper
         );
 
         // 더미 프로필 이미지 생성

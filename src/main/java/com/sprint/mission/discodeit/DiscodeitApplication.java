@@ -1,3 +1,4 @@
+/*
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.dto.UserCreateDto;
@@ -61,3 +62,4 @@ public class DiscodeitApplication {
 
 	}
 }
+*/

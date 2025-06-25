@@ -33,63 +33,41 @@ public class BasicUserService implements UserService {
     private final UserMapper userMapper;
     private final BinaryContentMapper binaryContentMapper;
 
-    private BinaryContent saveProfileImage(BinaryContentCreateDto binaryContentCreateDto, UUID userId) {
-        BinaryContent createdBinaryContent = binaryContentMapper.toEntity(binaryContentCreateDto, userId);
-        return binaryContentRepository.save(createdBinaryContent);
-    }
-
     @Override
     public User create(UserCreateDto userCreateDto) {
-        // 1. 유저 중복 체크
-        if (userRepository.existsByUsername(userCreateDto.getUsername())) {
-            throw new IllegalArgumentException("user 이름 중복");
-        }
-        if (userRepository.existsByEmail(userCreateDto.getEmail())) {
-            throw new IllegalArgumentException("user email 중복");
-        }
 
-        // 2. 유저 생성
+        validateUserDuplications(userCreateDto.getUsername(), userCreateDto.getEmail());
+
         User createdUser = userMapper.toEntity(userCreateDto);
-
-        // 3. 프로필 이미지 있으면 같이 등록
         if (userCreateDto.getBinaryContent() != null) {
             createdUser.setProfileImageId(
                     saveProfileImage(userCreateDto.getBinaryContent(), createdUser.getId()).getId()
             );
         }
 
-        // 4. DB에 영속화
         User savedUser = userRepository.save(createdUser);
+        userStatusRepository.save(new UserStatus(savedUser.getId()));
 
-        // 5. 생성된 사용자의 기본 상태를 추적할 UserStatus 객체 생성
-        UserStatus userStatus = new UserStatus(savedUser.getId());
-        userStatusRepository.save(userStatus);
         return savedUser;
-
     }
 
     @Override
     public UserStatusDto find(UUID userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
-
-        UserStatus userStatus = userStatusRepository.findByUserId(userId)
-                .orElseThrow(() -> new NoSuchElementException("UserStatus with user id " + userId + " not found"));
+        User user = getUserOrThrow(userId);
+        UserStatus userStatus = getUserStatusOrThrow(userId);
 
         return userMapper.toDto(user, userStatus);
     }
 
-    // 목표: 모든 사용자를 불러오고, 각 사용자마다 온라인 상태도 보여줄거임
-    // -> user, userStatus 필요
     @Override
     public List<UserStatusDto> findAll() {
 
         List<User> users = userRepository.findAll();
         List<UserStatusDto> userStatusDtos = new ArrayList<>();
+
         for (User user : users) {
-            UserStatus userStatus = userStatusRepository.findByUserId(user.getId())
-                    .orElseThrow(() -> new NoSuchElementException("UserStatus with user id " + user.getId() + " not found"));
+            UserStatus userStatus = getUserStatusOrThrow(user.getId());
             userStatusDtos.add(userMapper.toDto(user, userStatus));
         }
 
@@ -99,8 +77,7 @@ public class BasicUserService implements UserService {
     @Override
     public User update(UserUpdateDto userUpdateDto) {
 
-        User user = userRepository.findById(userUpdateDto.getId())
-                .orElseThrow(() -> new NoSuchElementException("User with id " + userUpdateDto.getId() + " not found"));
+        User user = getUserOrThrow(userUpdateDto.getId());
 
         boolean anyValueUpdated = false;
         if (userUpdateDto.getUsername() != null && !userUpdateDto.getUsername().equals(user.getUsername())) {
@@ -134,8 +111,8 @@ public class BasicUserService implements UserService {
         }
 
         binaryContentRepository.findAll().stream()
-                .filter(bcr-> userId.equals(bcr.getUserId()))
-                .forEach(bcr-> binaryContentRepository.deleteById(bcr.getId()));
+                .filter(bcr -> userId.equals(bcr.getUserId()))
+                .forEach(bcr -> binaryContentRepository.deleteById(bcr.getId()));
         userStatusRepository.deleteById(userId);
         userRepository.deleteById(userId);
     }
@@ -147,5 +124,35 @@ public class BasicUserService implements UserService {
         Instant fiveMinutesAgo = Instant.now().minusSeconds(60 * 5);
 
         return fiveMinutesAgo.isBefore(userStatusDto.getUpdatedAt());
+    }
+
+    // 프로필 이미지 등록
+    private BinaryContent saveProfileImage(BinaryContentCreateDto binaryContentCreateDto, UUID userId) {
+        BinaryContent createdBinaryContent = binaryContentMapper.toEntity(binaryContentCreateDto, userId);
+        return binaryContentRepository.save(createdBinaryContent);
+    }
+
+    // 리팩토링 : 중복 제거용 private 메서드
+    private User getUserOrThrow(UUID userId) {
+
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+    }
+
+    private UserStatus getUserStatusOrThrow(UUID userId) {
+
+        return userStatusRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("UserStatus with user id " + userId + " not found"));
+    }
+
+    private void validateUserDuplications(String username, String email) {
+
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("user 이름 중복");
+        }
+
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("user email 중복");
+        }
     }
 }
