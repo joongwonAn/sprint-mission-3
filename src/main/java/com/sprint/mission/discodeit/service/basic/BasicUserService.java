@@ -33,7 +33,7 @@ public class BasicUserService implements UserService {
     private final BinaryContentMapper binaryContentMapper;
 
     @Override
-    public User create(UserCreateDto userCreateDto) {
+    public UserStatusDto create(UserCreateDto userCreateDto) {
 
         validateUserDuplications(userCreateDto.getUsername(), userCreateDto.getEmail());
 
@@ -47,7 +47,9 @@ public class BasicUserService implements UserService {
         User savedUser = userRepository.save(createdUser);
         userStatusRepository.save(new UserStatus(savedUser.getId()));
 
-        return savedUser;
+        UserStatus userStatus = getUserStatusOrThrow(savedUser.getId());
+
+        return userMapper.toDto(savedUser, userStatus);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class BasicUserService implements UserService {
         anyValueUpdated = updateIfChanged(userUpdateDto.getUsername(), user.getUsername(), user::setUsername, anyValueUpdated);
         anyValueUpdated = updateIfChanged(userUpdateDto.getEmail(), user.getEmail(), user::setEmail, anyValueUpdated);
         anyValueUpdated = updateIfChanged(userUpdateDto.getPassword(), user.getPassword(), user::setPassword, anyValueUpdated);
-        anyValueUpdated=Optional.ofNullable(userUpdateDto.getNewProfileImage())
+        anyValueUpdated = Optional.ofNullable(userUpdateDto.getNewProfileImage())
                 .map(mewImg -> {
                     Optional.ofNullable(user.getProfileImageId())
                             .ifPresent(binaryContentRepository::deleteById);
@@ -92,7 +94,7 @@ public class BasicUserService implements UserService {
                     return true;
                 }).orElse(anyValueUpdated);
 
-        if(anyValueUpdated){
+        if (anyValueUpdated) {
             user.setUpdatedAt(Instant.now());
         }
 

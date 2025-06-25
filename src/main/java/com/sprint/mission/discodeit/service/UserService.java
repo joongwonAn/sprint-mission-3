@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface UserService {
 
-    User create(UserCreateDto userCreateDto);
+    UserStatusDto create(UserCreateDto userCreateDto);
 
     UserStatusDto find(UUID userId);
 
