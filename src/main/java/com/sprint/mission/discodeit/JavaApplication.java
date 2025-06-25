@@ -78,12 +78,19 @@ public class JavaApplication {
         }
 
         // update TEST
+        byte[] newImageBytes = "new image content bytes".getBytes(StandardCharsets.UTF_8);
+        BinaryContentCreateDto newProfileImage = new BinaryContentCreateDto(
+                newImageBytes,
+                "new_profile.jpg",
+                BinaryContentType.USER_PROFILE_IMAGE
+        );
+
         UserUpdateDto updateDto = new UserUpdateDto(
                 userId, // 어떤 유저를 수정할지 지정
                 "buzz", // 새로운 username
                 "buzz@codeit.com", // 새로운 email
                 "buzz1234", // 새로운 password
-                createdUser.getProfileImageId() // 기존 이미지 그대로 사용
+                newProfileImage // 기존 이미지 그대로 사용
         );
         User updatedUser = userService.update(updateDto);
 

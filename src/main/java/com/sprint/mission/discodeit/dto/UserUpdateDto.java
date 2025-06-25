@@ -13,5 +13,5 @@ public class UserUpdateDto {
     private String username;
     private String email;
     private String password;
-    private UUID profileImageId;
+    private BinaryContentCreateDto newProfileImage;
 }

@@ -16,11 +16,10 @@ import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -78,26 +77,22 @@ public class BasicUserService implements UserService {
     public User update(UserUpdateDto userUpdateDto) {
 
         User user = getUserOrThrow(userUpdateDto.getId());
-
         boolean anyValueUpdated = false;
-        if (userUpdateDto.getUsername() != null && !userUpdateDto.getUsername().equals(user.getUsername())) {
-            user.setUsername(userUpdateDto.getUsername());
-            anyValueUpdated = true;
-        }
-        if (userUpdateDto.getEmail() != null && !userUpdateDto.getEmail().equals(user.getEmail())) {
-            user.setEmail(userUpdateDto.getEmail());
-            anyValueUpdated = true;
-        }
-        if (userUpdateDto.getPassword() != null && !userUpdateDto.getPassword().equals(user.getPassword())) {
-            user.setPassword(userUpdateDto.getPassword());
-            anyValueUpdated = true;
-        }
-        if (userUpdateDto.getProfileImageId() != null && !userUpdateDto.getProfileImageId().equals(user.getProfileImageId())) {
-            user.setProfileImageId(userUpdateDto.getProfileImageId());
-            anyValueUpdated = true;
-        }
 
-        if (anyValueUpdated) {
+        anyValueUpdated = updateIfChanged(userUpdateDto.getUsername(), user.getUsername(), user::setUsername, anyValueUpdated);
+        anyValueUpdated = updateIfChanged(userUpdateDto.getEmail(), user.getEmail(), user::setEmail, anyValueUpdated);
+        anyValueUpdated = updateIfChanged(userUpdateDto.getPassword(), user.getPassword(), user::setPassword, anyValueUpdated);
+        anyValueUpdated=Optional.ofNullable(userUpdateDto.getNewProfileImage())
+                .map(mewImg -> {
+                    Optional.ofNullable(user.getProfileImageId())
+                            .ifPresent(binaryContentRepository::deleteById);
+
+                    UUID newProfileImageId = saveProfileImage(mewImg, user.getId()).getId();
+                    user.setProfileImageId(newProfileImageId);
+                    return true;
+                }).orElse(anyValueUpdated);
+
+        if(anyValueUpdated){
             user.setUpdatedAt(Instant.now());
         }
 
@@ -154,5 +149,15 @@ public class BasicUserService implements UserService {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("user email 중복");
         }
+    }
+
+    private <T> boolean updateIfChanged(T newValue, T oldValue, Consumer<T> setter, boolean anyValueUpdated) {
+
+        return Optional.ofNullable(newValue)
+                .filter(n -> !n.equals(oldValue))
+                .map(n -> {
+                    setter.accept(n);
+                    return true;
+                }).orElse(anyValueUpdated);
     }
 }
