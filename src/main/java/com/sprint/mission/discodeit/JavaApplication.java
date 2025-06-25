@@ -1,16 +1,15 @@
 package com.sprint.mission.discodeit;
 
-import com.sprint.mission.discodeit.dto.BinaryContentCreateDto;
-import com.sprint.mission.discodeit.dto.UserUpdateDto;
+import com.sprint.mission.discodeit.dto.*;
 import com.sprint.mission.discodeit.entity.BinaryContentType;
-import com.sprint.mission.discodeit.dto.UserCreateDto;
-import com.sprint.mission.discodeit.dto.UserStatusDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.repository.file.*;
+import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.service.basic.BasicAuthService;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 
 import java.nio.charset.StandardCharsets;
@@ -37,16 +36,19 @@ public class JavaApplication {
                 userMapper,
                 binaryContentMapper
         );
+        AuthService authService = new BasicAuthService(
+                userRepository,
+                userStatusRepository,
+                userMapper
+        );
 
-        // 더미 프로필 이미지 생성
+        // 회원가입
         byte[] dummyBytes = "hello image file content".getBytes(StandardCharsets.UTF_8);
         BinaryContentCreateDto binaryContentDto = new BinaryContentCreateDto(
                 dummyBytes,
                 "profile.jpg",
                 BinaryContentType.USER_PROFILE_IMAGE
         );
-
-        // 유저 생성 DTO
         UserCreateDto userCreateDto = new UserCreateDto(
                 "woody",
                 "woody@codeit.com",
@@ -59,6 +61,12 @@ public class JavaApplication {
         UUID userId = createdUser.getId();
         System.out.println("\n[생성 완료] ID: " + userId);
         System.out.println("[프로필 이미지 ID] " + createdUser.getProfileImageId());
+
+        // login TEST
+        UserLoginDto loginDto = new UserLoginDto("woody", "woody1234");
+        UserStatusDto afterLogin = authService.login(loginDto);
+        System.out.println("\n[LOGIN] updatedAt=" + afterLogin.getUpdatedAt() +
+                ", online? " + userService.isOnline(afterLogin));
 
         // find TEST
         UserStatusDto foundUser = userService.find(userId);
