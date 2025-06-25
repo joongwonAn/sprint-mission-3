@@ -55,7 +55,7 @@ public class JavaApplication {
         );
 
         // create TEST
-        User createdUser = userService.create(userCreateDto);
+        UserStatusDto createdUser = userService.create(userCreateDto);
         UUID userId = createdUser.getId();
         System.out.println("\n[생성 완료] ID: " + userId);
         System.out.println("[프로필 이미지 ID] " + createdUser.getProfileImageId());
