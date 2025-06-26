@@ -15,10 +15,10 @@ import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import static com.sprint.mission.discodeit.util.UpdateUtil.updateIfChanged;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -150,15 +150,5 @@ public class BasicUserService implements UserService {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("user email 중복");
         }
-    }
-
-    private <T> boolean updateIfChanged(T newValue, T oldValue, Consumer<T> setter, boolean anyValueUpdated) {
-
-        return Optional.ofNullable(newValue)
-                .filter(n -> !n.equals(oldValue))
-                .map(n -> {
-                    setter.accept(n);
-                    return true;
-                }).orElse(anyValueUpdated);
     }
 }
