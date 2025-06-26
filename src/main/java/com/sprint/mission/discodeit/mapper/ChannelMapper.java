@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.mapper;
 
-import com.sprint.mission.discodeit.dto.ChannelDto;
+import com.sprint.mission.discodeit.dto.ChannelResponseDto;
 import com.sprint.mission.discodeit.dto.PublicChannelCreateDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
@@ -23,8 +23,8 @@ public class ChannelMapper {
         );
     }
 
-    public ChannelDto toDto(Channel channel, Instant lastMessageAt, List<UUID> usersId) {
-        return new ChannelDto(
+    public ChannelResponseDto toDto(Channel channel, Instant lastMessageAt, List<UUID> usersId) {
+        return new ChannelResponseDto(
                 channel.getId(),
                 channel.getType(),
                 channel.getName(),

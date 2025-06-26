@@ -144,7 +144,7 @@ public class JavaApplication {
         // CHANNEL 관련
         // public channel CREATE TEST
         PublicChannelCreateDto pubDto = new PublicChannelCreateDto("공지", "전체 공지사항입니다.");
-        ChannelDto pubRes = channelService.createPublicChannel(pubDto);
+        ChannelResponseDto pubRes = channelService.createPublicChannel(pubDto);
 
         System.out.println("\n-- PUBLIC 채널 생성 --");
         System.out.println(pubRes.getId() + " / " + pubRes.getType()
@@ -153,7 +153,7 @@ public class JavaApplication {
         // private channel CREATE TEST
         PrivateChannelCreateDto priDto = new PrivateChannelCreateDto(
                 List.of(createdUser1.getId(), createdUser2.getId()));
-        ChannelDto priRes = channelService.createPrivateChannel(priDto);
+        ChannelResponseDto priRes = channelService.createPrivateChannel(priDto);
 
         System.out.println("\n-- PRIVATE 채널 생성 --");
         System.out.println(priRes.getId() + " / " + priRes.getType()
@@ -161,8 +161,8 @@ public class JavaApplication {
                 + " / desc=" + priRes.getDescription()); // null 예상
 
         System.out.println("\n-- CHANNEL 조회(find) 테스트 --");
-        ChannelDto foundPub  = channelService.find(pubRes.getId());
-        ChannelDto foundPri  = channelService.find(priRes.getId());
+        ChannelResponseDto foundPub  = channelService.find(pubRes.getId());
+        ChannelResponseDto foundPri  = channelService.find(priRes.getId());
 
         System.out.printf("[PUBLIC ] id=%s, lastMsg=%s, users=%s%n",
                 foundPub.getId(), foundPub.getLastMessageAt(), foundPub.getUserIds());
@@ -170,9 +170,9 @@ public class JavaApplication {
         System.out.printf("[PRIVATE] id=%s, lastMsg=%s, users=%s%n",
                 foundPri.getId(), foundPri.getLastMessageAt(), foundPri.getUserIds());
 
-        List<ChannelDto> allChannels = channelService.findAllByUserId(userId);
+        List<ChannelResponseDto> allChannels = channelService.findAllByUserId(userId);
         System.out.println("\n[findAll - 채널 전체 조회 결과]");
-        for (ChannelDto dto : allChannels) {
+        for (ChannelResponseDto dto : allChannels) {
             System.out.println("→ ID: " + dto.getId()
                     + ", Type: " + dto.getType()
                     + ", Name: " + dto.getName()
@@ -186,7 +186,7 @@ public class JavaApplication {
                 "공지 - 수정됨",
                 "수정된 전체 공지사항입니다."
         );
-        ChannelDto updatedChannel = channelService.update(channelUpdateDto);
+        ChannelResponseDto updatedChannel = channelService.update(channelUpdateDto);
 
         System.out.println("\n-- CHANNEL 업데이트 테스트 --");
         System.out.println(updatedChannel.getId() + " / " + updatedChannel.getType()
@@ -195,12 +195,12 @@ public class JavaApplication {
         System.out.println("\n-- CHANNEL 삭제 테스트 --");
         UUID deleteChannelId = pubRes.getId();
 
-        List<ChannelDto> channelsBeforeDelete = channelService.findAllByUserId(userId);
+        List<ChannelResponseDto> channelsBeforeDelete = channelService.findAllByUserId(userId);
         System.out.println("삭제 전 채널 개수: " + channelsBeforeDelete.size());
 
         channelService.delete(deleteChannelId);
 
-        List<ChannelDto> channelsAfterDelete = channelService.findAllByUserId(userId);
+        List<ChannelResponseDto> channelsAfterDelete = channelService.findAllByUserId(userId);
         System.out.println("삭제 후 채널 개수: " + channelsAfterDelete.size());
 
 

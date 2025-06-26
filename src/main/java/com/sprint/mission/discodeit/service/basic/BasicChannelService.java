@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.ChannelDto;
+import com.sprint.mission.discodeit.dto.ChannelResponseDto;
 import com.sprint.mission.discodeit.dto.ChannelUpdateDto;
 import com.sprint.mission.discodeit.dto.PrivateChannelCreateDto;
 import com.sprint.mission.discodeit.dto.PublicChannelCreateDto;
@@ -33,7 +33,7 @@ public class BasicChannelService implements ChannelService {
     private final ChannelMapper channelMapper;
 
     @Override
-    public ChannelDto createPublicChannel(PublicChannelCreateDto dto) {
+    public ChannelResponseDto createPublicChannel(PublicChannelCreateDto dto) {
         Channel channel = channelMapper.toEntity(dto);
         channelRepository.save(channel);
 
@@ -43,7 +43,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public ChannelDto createPrivateChannel(PrivateChannelCreateDto dto) {
+    public ChannelResponseDto createPrivateChannel(PrivateChannelCreateDto dto) {
         Channel channel = new Channel(ChannelType.PRIVATE, null, null);
         channelRepository.save(channel);
 
@@ -58,7 +58,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public ChannelDto find(UUID channelId) {
+    public ChannelResponseDto find(UUID channelId) {
         Channel channel = getChannelOrThrow(channelId);
         Instant lastMessage = getLastMessageAtOrNull(channelId);
 
@@ -68,9 +68,9 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public List<ChannelDto> findAllByUserId(UUID userId) {
+    public List<ChannelResponseDto> findAllByUserId(UUID userId) {
         List<Channel> channels = channelRepository.findAll();
-        List<ChannelDto> channelDtos = new ArrayList<>();
+        List<ChannelResponseDto> channelDtos = new ArrayList<>();
 
         for (Channel channel : channels) {
             Instant lastMessage = getLastMessageAtOrNull(channel.getId());
@@ -91,7 +91,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public ChannelDto update(ChannelUpdateDto channelUpdateDto) {
+    public ChannelResponseDto update(ChannelUpdateDto channelUpdateDto) {
         Channel channel = getChannelOrThrow(channelUpdateDto.getId());
         boolean anyValueUpdated = false;
 
