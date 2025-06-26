@@ -20,6 +20,5 @@ public interface ChannelService {
 
     ChannelDto update(ChannelUpdateDto channelUpdateDto);
 
-
-//    void delete(UUID channelId);
+    void delete(UUID channelId);
 }

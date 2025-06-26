@@ -113,6 +113,17 @@ public class BasicChannelService implements ChannelService {
         return channelMapper.toDto(channel, lastMessage, userIds);
     }
 
+    @Override
+    public void delete(UUID channelId) {
+        if (!channelRepository.existsById(channelId)) {
+            throw new NoSuchElementException("Channel with id " + channelId + " not found");
+        }
+
+        channelRepository.deleteById(channelId);
+        readStatusRepository.deleteByChannelId(channelId);
+        messageRepository.deleteByChannelId(channelId);
+    }
+
     // 중복 제거용 메서드
     private Channel getChannelOrThrow(UUID channelId) {
         return channelRepository.findById(channelId)
@@ -135,12 +146,4 @@ public class BasicChannelService implements ChannelService {
 
         return userIds;
     }
-
-//    @Override
-//    public void delete(UUID channelId) {
-//        if (!channelRepository.existsById(channelId)) {
-//            throw new NoSuchElementException("Channel with id " + channelId + " not found");
-//        }
-//        channelRepository.deleteById(channelId);
-//    }
 }

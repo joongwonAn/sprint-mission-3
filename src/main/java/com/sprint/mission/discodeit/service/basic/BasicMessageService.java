@@ -58,6 +58,6 @@ public class BasicMessageService implements MessageService {
         if (!messageRepository.existsById(messageId)) {
             throw new NoSuchElementException("Message with id " + messageId + " not found");
         }
-        messageRepository.deleteById(messageId);
+        messageRepository.deleteByChannelId(messageId);
     }
 }

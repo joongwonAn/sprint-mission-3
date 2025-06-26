@@ -40,7 +40,7 @@ public class JCFMessageRepository implements MessageRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        this.data.remove(id);
+    public void deleteByChannelId(UUID channelId) {
+        this.data.remove(channelId);
     }
 }

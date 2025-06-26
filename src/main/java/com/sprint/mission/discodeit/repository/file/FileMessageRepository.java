@@ -100,10 +100,23 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        Path path = resolvePath(id);
+    public void deleteByChannelId(UUID channelId) {
         try {
-            Files.delete(path);
+            Files.list(DIRECTORY)
+                    .filter(path -> path.toString().endsWith(EXTENSION))
+                    .forEach(path -> {
+                        try (
+                                FileInputStream fis = new FileInputStream(path.toFile());
+                                ObjectInputStream ois = new ObjectInputStream(fis)
+                        ) {
+                            Message message = (Message) ois.readObject();
+                            if (channelId.equals(message.getChannelId())) {
+                                Files.delete(path);
+                            }
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

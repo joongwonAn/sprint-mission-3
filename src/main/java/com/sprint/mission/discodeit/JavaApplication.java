@@ -191,5 +191,18 @@ public class JavaApplication {
         System.out.println("\n-- CHANNEL 업데이트 테스트 --");
         System.out.println(updatedChannel.getId() + " / " + updatedChannel.getType()
                 + " / " + updatedChannel.getName() + " / " + updatedChannel.getDescription());
+
+        System.out.println("\n-- CHANNEL 삭제 테스트 --");
+        UUID deleteChannelId = pubRes.getId();
+
+        List<ChannelDto> channelsBeforeDelete = channelService.findAllByUserId(userId);
+        System.out.println("삭제 전 채널 개수: " + channelsBeforeDelete.size());
+
+        channelService.delete(deleteChannelId);
+
+        List<ChannelDto> channelsAfterDelete = channelService.findAllByUserId(userId);
+        System.out.println("삭제 후 채널 개수: " + channelsAfterDelete.size());
+
+
     }
 }
