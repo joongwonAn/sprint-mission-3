@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,6 +83,14 @@ public class FileMessageRepository implements MessageRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<Instant> findLastUpdatedAtByChannelId(UUID channelId) {
+        return findAll().stream()
+                .filter(message -> channelId.equals(message.getChannelId()))
+                .map(Message::getUpdatedAt)
+                .max(Instant::compareTo);
     }
 
     @Override

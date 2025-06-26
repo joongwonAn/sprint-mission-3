@@ -6,6 +6,10 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
 @Component
 public class ChannelMapper {
     public ChannelMapper() {
@@ -19,12 +23,14 @@ public class ChannelMapper {
         );
     }
 
-    public ChannelDto toDto(Channel channel) {
+    public ChannelDto toDto(Channel channel, Instant lastMessageAt, List<UUID> usersId) {
         return new ChannelDto(
                 channel.getId(),
                 channel.getType(),
                 channel.getName(),
-                channel.getDescription()
+                channel.getDescription(),
+                lastMessageAt,
+                usersId
         );
     }
 }

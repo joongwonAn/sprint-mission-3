@@ -6,23 +6,25 @@ import com.sprint.mission.discodeit.dto.PublicChannelCreateDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.ReadStatus;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
-import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class BasicChannelService implements ChannelService {
     private final ChannelRepository channelRepository;
-    private final UserRepository userRepository;
     private final ReadStatusRepository readStatusRepository;
+    private final MessageRepository messageRepository;
 
     private final ChannelMapper channelMapper;
 
@@ -31,7 +33,9 @@ public class BasicChannelService implements ChannelService {
         Channel channel = channelMapper.toEntity(dto);
         channelRepository.save(channel);
 
-        return channelMapper.toDto(channel);
+        Instant lastMessage = getLastMessageAtOrNull(channel.getId());
+
+        return channelMapper.toDto(channel, lastMessage, null);
     }
 
     @Override
@@ -40,27 +44,41 @@ public class BasicChannelService implements ChannelService {
         channelRepository.save(channel);
 
         for (UUID userId : dto.getUserIds()) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
-
             ReadStatus readStatus = new ReadStatus(userId, channel.getId());
             readStatusRepository.save(readStatus);
         }
 
-        return channelMapper.toDto(channel);
+        Instant lastMessage = getLastMessageAtOrNull(channel.getId());
+
+        return channelMapper.toDto(channel, lastMessage, dto.getUserIds());
     }
 
-//    @Override
-//    public Channel find(UUID channelId) {
-//        return channelRepository.findById(channelId)
-//                        .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found"));
-//    }
-//
-//    @Override
-//    public List<Channel> findAll() {
-//        return channelRepository.findAll();
-//    }
-//
+    @Override
+    public ChannelDto find(UUID channelId) {
+        Channel channel = getChannelOrThrow(channelId);
+        Instant lastMessage = getLastMessageAtOrNull(channelId);
+
+        List<UUID> users = List.of();
+        if (channel.getType() == ChannelType.PRIVATE) {
+            users = readStatusRepository
+                    .findByChannelId(channelId)
+                    .stream()
+                    .map(ReadStatus::getUserId)
+                    .toList();
+        }
+
+        return channelMapper.toDto(channel, lastMessage, users);
+    }
+
+    private Channel getChannelOrThrow(UUID channelId) {
+        return channelRepository.findById(channelId)
+                .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+    }
+
+    private Instant getLastMessageAtOrNull(UUID channelId) {
+        return messageRepository.findLastUpdatedAtByChannelId(channelId).orElse(null);
+    }
+
 //    @Override
 //    public Channel update(UUID channelId, String newName, String newDescription) {
 //        Channel channel = channelRepository.findById(channelId)

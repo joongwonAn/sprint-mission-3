@@ -32,7 +32,8 @@ public class JavaApplication {
         UserStatusRepository userStatusRepository = new FileUserStatusRepository();
         BinaryContentRepository binaryContentRepository = new FileBinaryContentRepository();
         ChannelRepository channelRepository = new FileChannelRepository();
-        ReadStatusRepository readStatusRepositry = new FileReadStatusRepository();
+        ReadStatusRepository readStatusRepository = new FileReadStatusRepository();
+        MessageRepository messageRepository = new FileMessageRepository();
 
         // 서비스 초기화
         UserService userService = new BasicUserService(
@@ -49,8 +50,8 @@ public class JavaApplication {
         );
         ChannelService channelService = new BasicChannelService(
                 channelRepository,
-                userRepository,
-                readStatusRepositry,
+                readStatusRepository,
+                messageRepository,
                 channelMapper
         );
 
@@ -158,7 +159,16 @@ public class JavaApplication {
         System.out.println(priRes.getId() + " / " + priRes.getType()
                 + " / name=" + priRes.getName()   // null 예상
                 + " / desc=" + priRes.getDescription()); // null 예상
+
+        System.out.println("\n-- CHANNEL 조회(find) 테스트 --");
+        ChannelDto foundPub  = channelService.find(pubRes.getId());
+        ChannelDto foundPri  = channelService.find(priRes.getId());
+
+        System.out.printf("[PUBLIC ] id=%s, lastMsg=%s, users=%s%n",
+                foundPub.getId(), foundPub.getLastMessageAt(), foundPub.getUserIds());
+
+        System.out.printf("[PRIVATE] id=%s, lastMsg=%s, users=%s%n",
+                foundPri.getId(), foundPri.getLastMessageAt(), foundPri.getUserIds());
+
     }
-
-
 }
