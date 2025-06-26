@@ -9,12 +9,12 @@ import java.util.UUID;
 
 @Getter
 public class UserStatus implements Serializable {
-    private UUID id;
-    private Instant createdAt;
+    private final UUID id;
+    private final Instant createdAt;
     @Setter
     private Instant updatedAt;
 
-    private UUID userId;
+    private final UUID userId;
 
     // 생성자
     public UserStatus(UUID userId) {

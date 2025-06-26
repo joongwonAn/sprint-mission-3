@@ -9,15 +9,15 @@ import java.util.UUID;
 @Getter
 public class BinaryContent implements Serializable {
 
-    private UUID id;
-    private Instant createdAt;
+    private final UUID id;
+    private final Instant createdAt;
 
-    private  UUID userId;
-    private  UUID messageId;
+    private  final UUID userId;
+    private  final UUID messageId;
 
-    private byte[] bytes;
-    private String fileName;
-    private BinaryContentType fileType;
+    private final byte[] bytes;
+    private final String fileName;
+    private final BinaryContentType fileType;
 
     public BinaryContent(UUID userId, UUID messageId, byte[] bytes, String fileName, BinaryContentType fileType) {
         this.userId = userId;

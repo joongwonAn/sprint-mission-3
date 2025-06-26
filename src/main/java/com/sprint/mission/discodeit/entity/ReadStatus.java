@@ -9,13 +9,13 @@ import java.util.UUID;
 @Getter
 public class ReadStatus implements Serializable {
 
-    private UUID id;
-    private Instant createdAt;
+    private final UUID id;
+    private final Instant createdAt;
     private Instant updatedAt;
     private Instant readAt;
 
-    private UUID userId;
-    private UUID channelId;
+    private final UUID userId;
+    private final UUID channelId;
 
     public ReadStatus(UUID userId, UUID channelId) {
         this.userId = userId;
