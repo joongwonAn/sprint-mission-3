@@ -5,14 +5,17 @@ import com.sprint.mission.discodeit.entity.BinaryContentType;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
+import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.repository.file.*;
 import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.service.ChannelService;
+import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.basic.BasicAuthService;
 import com.sprint.mission.discodeit.service.basic.BasicChannelService;
+import com.sprint.mission.discodeit.service.basic.BasicMessageService;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 
 import java.nio.charset.StandardCharsets;
@@ -161,8 +164,8 @@ public class JavaApplication {
                 + " / desc=" + priRes.getDescription()); // null 예상
 
         System.out.println("\n-- CHANNEL 조회(find) 테스트 --");
-        ChannelResponseDto foundPub  = channelService.find(pubRes.getId());
-        ChannelResponseDto foundPri  = channelService.find(priRes.getId());
+        ChannelResponseDto foundPub = channelService.find(pubRes.getId());
+        ChannelResponseDto foundPri = channelService.find(priRes.getId());
 
         System.out.printf("[PUBLIC ] id=%s, lastMsg=%s, users=%s%n",
                 foundPub.getId(), foundPub.getLastMessageAt(), foundPub.getUserIds());
@@ -192,7 +195,7 @@ public class JavaApplication {
         System.out.println(updatedChannel.getId() + " / " + updatedChannel.getType()
                 + " / " + updatedChannel.getName() + " / " + updatedChannel.getDescription());
 
-        System.out.println("\n-- CHANNEL 삭제 테스트 --");
+        /*System.out.println("\n-- CHANNEL 삭제 테스트 --");
         UUID deleteChannelId = pubRes.getId();
 
         List<ChannelResponseDto> channelsBeforeDelete = channelService.findAllByUserId(userId);
@@ -201,7 +204,45 @@ public class JavaApplication {
         channelService.delete(deleteChannelId);
 
         List<ChannelResponseDto> channelsAfterDelete = channelService.findAllByUserId(userId);
-        System.out.println("삭제 후 채널 개수: " + channelsAfterDelete.size());
+        System.out.println("삭제 후 채널 개수: " + channelsAfterDelete.size());*/
+
+        BinaryContentMapper bcMapper = new BinaryContentMapper();
+        BinaryContentCreateDto attach1 = new BinaryContentCreateDto(
+                "file-1".getBytes(StandardCharsets.UTF_8),
+                "img01.png",
+                BinaryContentType.MESSAGE_IMAGE);
+
+        BinaryContentCreateDto attach2 = new BinaryContentCreateDto(
+                "file-2".getBytes(StandardCharsets.UTF_8),
+                "img02.png",
+                BinaryContentType.MESSAGE_IMAGE);
+
+        UUID attachId1 = binaryContentRepository.save(bcMapper.toEntity(attach1, userId)).getId();
+        UUID attachId2 = binaryContentRepository.save(bcMapper.toEntity(attach2, userId)).getId();
+
+        MessageMapper msgMapper = new MessageMapper();
+        MessageService messageService = new BasicMessageService(
+                messageRepository,
+                channelRepository,
+                userRepository,
+                binaryContentRepository,
+                msgMapper,
+                bcMapper
+        );
+
+        MessageCreateDto msgCreateDto = new MessageCreateDto(
+                "첨부파일 두 개 테스트",
+                pubRes.getId(),
+                userId,
+                List.of(attachId1, attachId2)
+        );
+
+        MessageResponseDto msgRes = messageService.create(msgCreateDto);
+
+        System.out.println("\n-- MESSAGE create TEST --");
+        System.out.printf("msgId=%s, content=%s, channel=%s, author=%s, attachments=%s, createdAt=%s%n",
+                msgRes.getId(), msgRes.getContent(), msgRes.getChannelId(),
+                msgRes.getAuthorId(), msgRes.getAttachmentIds(), msgRes.getCreatedAt());
 
 
     }
