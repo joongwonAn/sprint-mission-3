@@ -142,3 +142,20 @@
                               .map(Integer::parseInt)
                               .orElse(5000);
     ```
+6) Lombok 어노테이션 정리
+| `@Getter` / `@Setter` | 모든 필드 (또는 접근 레벨 지정된 필드)의 getter / setter 자동 생성 | `@Getter(AccessLevel.PROTECTED)` 처럼 접근 수준 지정 가능 |
+| --- | --- | --- |
+| `@NoArgsConstructor` | 파라미터가 없는 기본 생성자 생성 | `force = true` → final 필드도 0/null 값으로 강제 초기화 |
+| `@AllArgsConstructor` | 모든 필드를 받는 생성자 생성 |  |
+| `@RequiredArgsConstructor` | `final` 혹은 `@NonNull`필드만 받는 생성자 생성 | DI용으로 가장 많이 사용 |
+| `@Builder` | 빌더 패턴 구현 | 클래스나 생성자 위에 사용. `toBuilder = true`로 빌더 복사 가능 |
+| `@Data` | `@Getter` + `@Setter` + `@ToString` + `@EqualsAndHashCode` + `@RequiredArgsConstructor` | “간편 POJO”에 유용하지만, 엔티티(가변 객체)에는 과도할 수 있음 |
+| `@Value` | 불변 객체 전용. `@Data` + 모든 필드 `private final`, 클래스 `final` | DTO 같은 순수 데이터 전달용 객체에 적합 |
+| `@Slf4j` | `private static final Logger log = LoggerFactory.getLogger(..);` 자동 추가 | 다른 로그 라이브러리용(`@Log4j2`, `@CommonsLog` 등)도 동일 패턴 |
+| `@ToString` | `toString()` 커스터마이즈 | `exclude = {"password"}` 같은 필드 제외 가능 |
+| `@EqualsAndHashCode` | `equals()` / `hashCode()` 구현 | `onlyExplicitlyIncluded = true` 후 `@EqualsAndHashCode.Include`로 필드 지정 |
+
+### TIP
+
+- 엔티티에는 가급적 `@Getter` + 필요한 `@Setter`(또는 명시적 메서드) 정도만 사용해 불변성/캡슐화를 유지하는 것이 좋음
+- `@Builder` + `@RequiredArgsConstructor`는 DTO·테스트 객체 생성 시 편리
