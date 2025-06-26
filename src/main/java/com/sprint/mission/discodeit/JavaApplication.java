@@ -180,5 +180,16 @@ public class JavaApplication {
                     + ", LastMessageAt: " + dto.getLastMessageAt()
                     + ", UserIds: " + dto.getUserIds());
         }
+
+        ChannelUpdateDto channelUpdateDto = new ChannelUpdateDto(
+                pubRes.getId(),
+                "공지 - 수정됨",
+                "수정된 전체 공지사항입니다."
+        );
+        ChannelDto updatedChannel = channelService.update(channelUpdateDto);
+
+        System.out.println("\n-- CHANNEL 업데이트 테스트 --");
+        System.out.println(updatedChannel.getId() + " / " + updatedChannel.getType()
+                + " / " + updatedChannel.getName() + " / " + updatedChannel.getDescription());
     }
 }

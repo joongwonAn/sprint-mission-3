@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.ChannelDto;
+import com.sprint.mission.discodeit.dto.ChannelUpdateDto;
 import com.sprint.mission.discodeit.dto.PrivateChannelCreateDto;
 import com.sprint.mission.discodeit.dto.PublicChannelCreateDto;
 import com.sprint.mission.discodeit.entity.Channel;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+
+import static com.sprint.mission.discodeit.util.UpdateUtil.updateIfChanged;
 
 @Service
 @RequiredArgsConstructor
@@ -59,14 +62,7 @@ public class BasicChannelService implements ChannelService {
         Channel channel = getChannelOrThrow(channelId);
         Instant lastMessage = getLastMessageAtOrNull(channelId);
 
-        List<UUID> users = List.of();
-        if (channel.getType() == ChannelType.PRIVATE) {
-            users = readStatusRepository
-                    .findByChannelId(channelId)
-                    .stream()
-                    .map(ReadStatus::getUserId)
-                    .toList();
-        }
+        List<UUID> users = getUserIds(channel);
 
         return channelMapper.toDto(channel, lastMessage, users);
     }
@@ -79,21 +75,14 @@ public class BasicChannelService implements ChannelService {
         for (Channel channel : channels) {
             Instant lastMessage = getLastMessageAtOrNull(channel.getId());
 
-            if(channel.getType()==ChannelType.PUBLIC){
+            if (channel.getType() == ChannelType.PUBLIC) {
                 channelDtos.add(channelMapper.toDto(channel, lastMessage, null));
                 continue;
             }
 
-            List<UUID> userIds = List.of();
-            if (channel.getType() == ChannelType.PRIVATE) {
-                userIds = readStatusRepository
-                        .findByChannelId(channel.getId())
-                        .stream()
-                        .map(ReadStatus::getUserId)
-                        .toList();
-            }
+            List<UUID> userIds = getUserIds(channel);
 
-            if(userIds.contains(userId)){
+            if (userIds.contains(userId)) {
                 channelDtos.add(channelMapper.toDto(channel, lastMessage, userIds));
             }
         }
@@ -101,6 +90,30 @@ public class BasicChannelService implements ChannelService {
         return channelDtos;
     }
 
+    @Override
+    public ChannelDto update(ChannelUpdateDto channelUpdateDto) {
+        Channel channel = getChannelOrThrow(channelUpdateDto.getId());
+        boolean anyValueUpdated = false;
+
+        if (channel.getType() == ChannelType.PUBLIC) {
+            anyValueUpdated = updateIfChanged(channelUpdateDto.getName(), channel.getName(), channel::setName, anyValueUpdated);
+            anyValueUpdated = updateIfChanged(channelUpdateDto.getDescription(), channel.getDescription(), channel::setDescription, anyValueUpdated);
+
+            if (anyValueUpdated) {
+                channel.setUpdatedAt(Instant.now());
+            }
+        }
+
+        Channel saved = channelRepository.save(channel);
+
+        Instant lastMessage = getLastMessageAtOrNull(saved.getId());
+
+        List<UUID> userIds = getUserIds(channel);
+
+        return channelMapper.toDto(channel, lastMessage, userIds);
+    }
+
+    // 중복 제거용 메서드
     private Channel getChannelOrThrow(UUID channelId) {
         return channelRepository.findById(channelId)
                 .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found"));
@@ -110,14 +123,19 @@ public class BasicChannelService implements ChannelService {
         return messageRepository.findLastUpdatedAtByChannelId(channelId).orElse(null);
     }
 
-//    @Override
-//    public Channel update(UUID channelId, String newName, String newDescription) {
-//        Channel channel = channelRepository.findById(channelId)
-//                .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found"));
-//        channel.update(newName, newDescription);
-//        return channelRepository.save(channel);
-//    }
-//
+    private List<UUID> getUserIds(Channel channel) {
+        List<UUID> userIds = List.of();
+        if (channel.getType() == ChannelType.PRIVATE) {
+            userIds = readStatusRepository
+                    .findByChannelId(channel.getId())
+                    .stream()
+                    .map(ReadStatus::getUserId)
+                    .toList();
+        }
+
+        return userIds;
+    }
+
 //    @Override
 //    public void delete(UUID channelId) {
 //        if (!channelRepository.existsById(channelId)) {

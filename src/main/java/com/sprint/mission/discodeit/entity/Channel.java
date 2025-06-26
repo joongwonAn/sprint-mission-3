@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,11 +14,14 @@ public class Channel implements Serializable {
     private static final long serialVersionUID = 1L;
     private final UUID id;
     private final Instant createdAt;
+    @Setter
     private Instant updatedAt;
     //
     private final ChannelType type;
-    private final String name;
-    private final String description;
+    @Setter
+    private String name;
+    @Setter
+    private String description;
 
     public Channel(ChannelType type, String name, String description) {
         this.id = UUID.randomUUID();
