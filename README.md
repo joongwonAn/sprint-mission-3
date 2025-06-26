@@ -142,6 +142,7 @@
                               .map(Integer::parseInt)
                               .orElse(5000);
     ```
+
 6) Lombok 어노테이션 정리
    
 | `@Getter` / `@Setter` | 모든 필드 (또는 접근 레벨 지정된 필드)의 getter / setter 자동 생성 | `@Getter(AccessLevel.PROTECTED)` 처럼 접근 수준 지정 가능 |
