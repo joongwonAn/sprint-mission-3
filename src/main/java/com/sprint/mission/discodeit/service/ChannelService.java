@@ -14,7 +14,7 @@ public interface ChannelService {
 
     ChannelDto find(UUID channelId);
 
-    List<ChannelDto> findAll();
+    List<ChannelDto> findAllByUserId(UUID userId);
 
 //    Channel update(UUID channelId, String newName, String newDescription);
 //

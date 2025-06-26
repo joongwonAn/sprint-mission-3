@@ -170,7 +170,7 @@ public class JavaApplication {
         System.out.printf("[PRIVATE] id=%s, lastMsg=%s, users=%s%n",
                 foundPri.getId(), foundPri.getLastMessageAt(), foundPri.getUserIds());
 
-        List<ChannelDto> allChannels = channelService.findAll();
+        List<ChannelDto> allChannels = channelService.findAllByUserId(userId);
         System.out.println("\n[findAll - 채널 전체 조회 결과]");
         for (ChannelDto dto : allChannels) {
             System.out.println("→ ID: " + dto.getId()

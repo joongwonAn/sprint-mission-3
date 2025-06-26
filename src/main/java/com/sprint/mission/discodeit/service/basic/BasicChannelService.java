@@ -72,22 +72,30 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public List<ChannelDto> findAll() {
+    public List<ChannelDto> findAllByUserId(UUID userId) {
         List<Channel> channels = channelRepository.findAll();
         List<ChannelDto> channelDtos = new ArrayList<>();
 
         for (Channel channel : channels) {
             Instant lastMessage = getLastMessageAtOrNull(channel.getId());
 
-            List<UUID> users = List.of();
+            if(channel.getType()==ChannelType.PUBLIC){
+                channelDtos.add(channelMapper.toDto(channel, lastMessage, null));
+                continue;
+            }
+
+            List<UUID> userIds = List.of();
             if (channel.getType() == ChannelType.PRIVATE) {
-                users = readStatusRepository
+                userIds = readStatusRepository
                         .findByChannelId(channel.getId())
                         .stream()
                         .map(ReadStatus::getUserId)
                         .toList();
             }
-            channelDtos.add(channelMapper.toDto(channel, lastMessage, users));
+
+            if(userIds.contains(userId)){
+                channelDtos.add(channelMapper.toDto(channel, lastMessage, userIds));
+            }
         }
 
         return channelDtos;
