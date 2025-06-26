@@ -170,5 +170,15 @@ public class JavaApplication {
         System.out.printf("[PRIVATE] id=%s, lastMsg=%s, users=%s%n",
                 foundPri.getId(), foundPri.getLastMessageAt(), foundPri.getUserIds());
 
+        List<ChannelDto> allChannels = channelService.findAll();
+        System.out.println("\n[findAll - 채널 전체 조회 결과]");
+        for (ChannelDto dto : allChannels) {
+            System.out.println("→ ID: " + dto.getId()
+                    + ", Type: " + dto.getType()
+                    + ", Name: " + dto.getName()
+                    + ", Description: " + dto.getDescription()
+                    + ", LastMessageAt: " + dto.getLastMessageAt()
+                    + ", UserIds: " + dto.getUserIds());
+        }
     }
 }

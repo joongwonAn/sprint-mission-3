@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -68,6 +69,28 @@ public class BasicChannelService implements ChannelService {
         }
 
         return channelMapper.toDto(channel, lastMessage, users);
+    }
+
+    @Override
+    public List<ChannelDto> findAll() {
+        List<Channel> channels = channelRepository.findAll();
+        List<ChannelDto> channelDtos = new ArrayList<>();
+
+        for (Channel channel : channels) {
+            Instant lastMessage = getLastMessageAtOrNull(channel.getId());
+
+            List<UUID> users = List.of();
+            if (channel.getType() == ChannelType.PRIVATE) {
+                users = readStatusRepository
+                        .findByChannelId(channel.getId())
+                        .stream()
+                        .map(ReadStatus::getUserId)
+                        .toList();
+            }
+            channelDtos.add(channelMapper.toDto(channel, lastMessage, users));
+        }
+
+        return channelDtos;
     }
 
     private Channel getChannelOrThrow(UUID channelId) {
