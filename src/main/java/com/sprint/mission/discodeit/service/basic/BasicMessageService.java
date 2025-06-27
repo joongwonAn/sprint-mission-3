@@ -85,6 +85,17 @@ public class BasicMessageService implements MessageService {
         return messageRepository.save(message);
     }
 
+    @Override
+    public void delete(UUID messageId) {
+
+       Message message = getMessageOrThrow(messageId);
+
+        messageRepository.deleteById(messageId);
+        for (UUID attachmentId : message.getAttachmentIds()) {
+            binaryContentRepository.deleteById(attachmentId);
+        }
+    }
+
     // 중복 메서드
     private Channel getChannelOrThrow(UUID channelId) {
         return channelRepository.findById(channelId)

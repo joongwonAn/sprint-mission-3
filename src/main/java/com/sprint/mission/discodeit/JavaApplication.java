@@ -251,6 +251,17 @@ public class JavaApplication {
                     msg.getId(), msg.getContent(), msg.getAuthorId(), msg.getCreatedAt());
         }
 
+        // MESSAGE delete TEST
+        /*System.out.println("\n-- MESSAGE delete TEST --");
+
+        messageService.delete(msgRes.getId());
+        boolean stillExists = messageRepository.existsById(msgRes.getId());
+        System.out.println("메시지 존재 여부(should be false) : " + stillExists);
+        for (UUID attId : List.of(attachId1, attachId2)) {
+            boolean attachExists = binaryContentRepository.findById(attId).isPresent();
+            System.out.println("첨부파일 " + attId + " 존재 여부(should be false) : " + attachExists);
+        }*/
+
         // ---------- MESSAGE update TEST ----------
         Message updatedMsg = messageService.update(msgRes.getId(), "내용 수정");
 

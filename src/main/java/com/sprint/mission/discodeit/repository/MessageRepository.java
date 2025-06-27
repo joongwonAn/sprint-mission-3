@@ -23,4 +23,6 @@ public interface MessageRepository {
     boolean existsById(UUID id);
 
     void deleteByChannelId(UUID channelId);
+
+    void deleteById(UUID id);
 }

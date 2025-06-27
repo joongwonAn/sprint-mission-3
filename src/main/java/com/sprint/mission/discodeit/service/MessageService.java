@@ -14,4 +14,6 @@ public interface MessageService {
     List<MessageResponseDto> findByChannelId(UUID channelId);
 
     Message update(UUID messageId, String newContent);
+
+    void delete(UUID messageId);
 }
