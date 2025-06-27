@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -91,6 +92,27 @@ public class FileMessageRepository implements MessageRepository {
                 .filter(message -> channelId.equals(message.getChannelId()))
                 .map(Message::getUpdatedAt)
                 .max(Instant::compareTo);
+    }
+
+    @Override
+    public List<Message> findByChannelId(UUID channelId) {
+        try {
+            return Files.list(DIRECTORY)
+                    .filter(path -> path.toString().endsWith(EXTENSION))
+                    .map(path -> {
+                        try (FileInputStream fis = new FileInputStream(path.toFile());
+                             ObjectInputStream ois = new ObjectInputStream(fis)) {
+                            return (Message) ois.readObject();
+                        } catch (IOException | ClassNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .filter(msg -> channelId.equals(msg.getChannelId()))
+                    .sorted(Comparator.comparing(Message::getCreatedAt))
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

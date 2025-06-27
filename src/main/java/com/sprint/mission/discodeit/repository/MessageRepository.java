@@ -18,6 +18,8 @@ public interface MessageRepository {
 
     Optional<Instant> findLastUpdatedAtByChannelId(UUID channelId);
 
+    List<Message> findByChannelId(UUID channelId);
+
     boolean existsById(UUID id);
 
     void deleteByChannelId(UUID channelId);

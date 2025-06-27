@@ -35,6 +35,11 @@ public class JCFMessageRepository implements MessageRepository {
     }
 
     @Override
+    public List<Message> findByChannelId(UUID channelId) {
+        return List.of();
+    }
+
+    @Override
     public boolean existsById(UUID id) {
         return this.data.containsKey(id);
     }
