@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,8 +16,10 @@ public class Message implements Serializable {
 
     private final UUID id;
     private final Instant createdAt;
+    @Setter
     private Instant updatedAt;
     //
+    @Setter
     private String content;
     //
     private final UUID channelId;
@@ -31,17 +34,5 @@ public class Message implements Serializable {
         this.channelId = channelId;
         this.authorId = authorId;
         this.attachmentIds = attachmentIds;
-    }
-
-    public void update(String newContent) {
-        boolean anyValueUpdated = false;
-        if (newContent != null && !newContent.equals(this.content)) {
-            this.content = newContent;
-            anyValueUpdated = true;
-        }
-
-        if (anyValueUpdated) {
-            this.updatedAt = Instant.now();
-        }
     }
 }

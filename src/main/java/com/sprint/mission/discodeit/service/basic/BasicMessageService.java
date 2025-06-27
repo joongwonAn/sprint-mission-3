@@ -6,16 +6,19 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
+
+import com.sprint.mission.discodeit.util.UpdateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -30,7 +33,6 @@ public class BasicMessageService implements MessageService {
     private final BinaryContentRepository binaryContentRepository;
 
     private final MessageMapper messageMapper;
-    private final BinaryContentMapper binaryContentMapper;
 
     @Override
     public MessageResponseDto create(MessageCreateDto dto) {
@@ -38,7 +40,7 @@ public class BasicMessageService implements MessageService {
         getChannelOrThrow(dto.getChannelId());
         getAuthorOtThrow(dto.getAuthorId());
 
-        if(dto.getAttachmentIds() != null){
+        if (dto.getAttachmentIds() != null) {
             for (UUID attachmentId : dto.getAttachmentIds()) {
                 getBinaryContentOrThrow(attachmentId);
             }
@@ -55,40 +57,33 @@ public class BasicMessageService implements MessageService {
 
         getChannelOrThrow(channelId);
 
-        List<MessageResponseDto> dtos = messageRepository.findByChannelId(channelId)
+        return messageRepository.findByChannelId(channelId)
                 .stream()
+                .sorted(Comparator.comparing(Message::getCreatedAt))
                 .map(messageMapper::toDto)
                 .toList();
-
-        return dtos;
     }
 
-    //    @Override
-//    public Message find(UUID messageId) {
-//        return messageRepository.findById(messageId)
-//                .orElseThrow(() -> new NoSuchElementException("Message with id " + messageId + " not found"));
-//    }
-//
-//    @Override
-//    public List<Message> findAll() {
-//        return messageRepository.findAll();
-//    }
-//
-//    @Override
-//    public Message update(UUID messageId, String newContent) {
-//        Message message = messageRepository.findById(messageId)
-//                .orElseThrow(() -> new NoSuchElementException("Message with id " + messageId + " not found"));
-//        message.update(newContent);
-//        return messageRepository.save(message);
-//    }
-//
-//    @Override
-//    public void delete(UUID messageId) {
-//        if (!messageRepository.existsById(messageId)) {
-//            throw new NoSuchElementException("Message with id " + messageId + " not found");
-//        }
-//        messageRepository.deleteByChannelId(messageId);
-//    }
+    @Override
+    public Message update(UUID messageId, String newContent) {
+
+        Message message = getMessageOrThrow(messageId);
+
+        boolean anyValueUpdated = false;
+
+        anyValueUpdated = UpdateUtil.updateIfChanged(
+                newContent,
+                message.getContent(),
+                message::setContent,
+                anyValueUpdated
+        );
+
+        if (anyValueUpdated) {
+            message.setUpdatedAt(Instant.now());
+        }
+
+        return messageRepository.save(message);
+    }
 
     // 중복 메서드
     private Channel getChannelOrThrow(UUID channelId) {
@@ -96,17 +91,17 @@ public class BasicMessageService implements MessageService {
                 .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found"));
     }
 
-    private User getAuthorOtThrow(UUID authorId){
+    private User getAuthorOtThrow(UUID authorId) {
         return userRepository.findById(authorId)
                 .orElseThrow(() -> new NoSuchElementException("Author not found with id " + authorId));
     }
 
-    private BinaryContent getBinaryContentOrThrow(UUID binaryContentId){
+    private BinaryContent getBinaryContentOrThrow(UUID binaryContentId) {
         return binaryContentRepository.findById(binaryContentId)
                 .orElseThrow(() -> new NoSuchElementException("BinaryContent not found with id " + binaryContentId));
     }
 
-    private Message getMessageOrThrow(UUID messageId){
+    private Message getMessageOrThrow(UUID messageId) {
         return messageRepository.findById(messageId)
                 .orElseThrow(() -> new NoSuchElementException("Message not found with id " + messageId));
     }

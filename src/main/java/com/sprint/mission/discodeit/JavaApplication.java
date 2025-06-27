@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.dto.*;
 import com.sprint.mission.discodeit.entity.BinaryContentType;
+import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
@@ -226,8 +227,7 @@ public class JavaApplication {
                 channelRepository,
                 userRepository,
                 binaryContentRepository,
-                msgMapper,
-                bcMapper
+                msgMapper
         );
 
         MessageCreateDto msgCreateDto = new MessageCreateDto(
@@ -244,6 +244,19 @@ public class JavaApplication {
                 msgRes.getId(), msgRes.getContent(), msgRes.getChannelId(),
                 msgRes.getAuthorId(), msgRes.getAttachmentIds(), msgRes.getCreatedAt());
 
+        List<MessageResponseDto> msgsInPub = messageService.findByChannelId(pubRes.getId());
+        System.out.println("\n-- MESSAGE findByChannelId TEST --");
+        for (MessageResponseDto msg : msgsInPub) {
+            System.out.printf("msgId=%s, content=%s, author=%s, createdAt=%s%n",
+                    msg.getId(), msg.getContent(), msg.getAuthorId(), msg.getCreatedAt());
+        }
+
+        // ---------- MESSAGE update TEST ----------
+        Message updatedMsg = messageService.update(msgRes.getId(), "내용 수정");
+
+        System.out.println("\n-- MESSAGE update TEST --");
+        System.out.printf("msgId=%s, content=%s, updatedAt=%s%n",
+                updatedMsg.getId(), updatedMsg.getContent(), updatedMsg.getUpdatedAt());
 
     }
 }
