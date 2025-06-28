@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.ReadStatusCreateDto;
 import com.sprint.mission.discodeit.dto.ReadStatusResponseDto;
+import com.sprint.mission.discodeit.dto.ReadStatusUpdateDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
@@ -10,9 +11,11 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ReadStatusService;
+import com.sprint.mission.discodeit.util.UpdateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -47,8 +50,7 @@ public class BasicReadStatusService implements ReadStatusService {
     @Override
     public ReadStatusResponseDto find(UUID id) {
 
-        ReadStatus readStatus = readStatusRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("ReadStatus with id " + id + " not found"));
+        ReadStatus readStatus = getReadStatusOrThrow(id);
 
         return readStatusMapper.toDto(readStatus);
     }
@@ -57,19 +59,27 @@ public class BasicReadStatusService implements ReadStatusService {
     public List<ReadStatusResponseDto> findAllByUserId(UUID userId) {
 
         getUserOrThrow(userId);
-        
+
         return readStatusRepository.findAllByUserId(userId)
                 .stream()
                 .map(readStatusMapper::toDto)
                 .toList();
     }
 
-    /*public void updateReadAt(Instant newReadTime) {
-        if(newReadTime.isAfter(this.readAt)) {
-            this.readAt = newReadTime;
-            this.updatedAt = Instant.now();
-        }
-    }*/
+    @Override
+    public ReadStatus update(ReadStatusUpdateDto dto) {
+
+        ReadStatus readStatus = getReadStatusOrThrow(dto.getId());
+
+        boolean anyValueUpdated = UpdateUtil.updateIfChanged(
+                dto.getReadAt(),
+                readStatus.getReadAt(),
+                readStatus::setReadAt,
+                false
+        );
+
+        return readStatusRepository.save(readStatus);
+    }
 
     // 중복 제거용 private method
     private User getUserOrThrow(UUID userId) {
@@ -81,5 +91,10 @@ public class BasicReadStatusService implements ReadStatusService {
     private Channel getChannelOrThrow(UUID channelId) {
         return channelRepository.findById(channelId)
                 .orElseThrow(() -> new NoSuchElementException("Channel with id " + channelId + " not found"));
+    }
+
+    private ReadStatus getReadStatusOrThrow(UUID id) {
+        return readStatusRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("ReadStatus with id " + id + " not found"));
     }
 }
