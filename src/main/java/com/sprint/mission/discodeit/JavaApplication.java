@@ -4,20 +4,11 @@ import com.sprint.mission.discodeit.dto.*;
 import com.sprint.mission.discodeit.entity.BinaryContentType;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
-import com.sprint.mission.discodeit.mapper.ChannelMapper;
-import com.sprint.mission.discodeit.mapper.MessageMapper;
-import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.mapper.*;
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.repository.file.*;
-import com.sprint.mission.discodeit.service.AuthService;
-import com.sprint.mission.discodeit.service.ChannelService;
-import com.sprint.mission.discodeit.service.MessageService;
-import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.basic.BasicAuthService;
-import com.sprint.mission.discodeit.service.basic.BasicChannelService;
-import com.sprint.mission.discodeit.service.basic.BasicMessageService;
-import com.sprint.mission.discodeit.service.basic.BasicUserService;
+import com.sprint.mission.discodeit.service.*;
+import com.sprint.mission.discodeit.service.basic.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -31,6 +22,7 @@ public class JavaApplication {
         UserMapper userMapper = new UserMapper();
         BinaryContentMapper binaryContentMapper = new BinaryContentMapper();
         ChannelMapper channelMapper = new ChannelMapper();
+        ReadStatusMapper rsMapper = new ReadStatusMapper();
 
         UserRepository userRepository = new FileUserRepository();
         UserStatusRepository userStatusRepository = new FileUserStatusRepository();
@@ -38,6 +30,7 @@ public class JavaApplication {
         ChannelRepository channelRepository = new FileChannelRepository();
         ReadStatusRepository readStatusRepository = new FileReadStatusRepository();
         MessageRepository messageRepository = new FileMessageRepository();
+        ReadStatusRepository readStatusRepo = new FileReadStatusRepository();
 
         // 서비스 초기화
         UserService userService = new BasicUserService(
@@ -57,6 +50,12 @@ public class JavaApplication {
                 readStatusRepository,
                 messageRepository,
                 channelMapper
+        );
+        ReadStatusService readStatusService = new BasicReadStatusService(
+                userRepository,
+                channelRepository,
+                readStatusRepo,
+                rsMapper
         );
 
         // 회원가입
@@ -262,12 +261,20 @@ public class JavaApplication {
             System.out.println("첨부파일 " + attId + " 존재 여부(should be false) : " + attachExists);
         }*/
 
-        // ---------- MESSAGE update TEST ----------
+        // MESSAGE update TEST
         Message updatedMsg = messageService.update(msgRes.getId(), "내용 수정");
 
         System.out.println("\n-- MESSAGE update TEST --");
         System.out.printf("msgId=%s, content=%s, updatedAt=%s%n",
                 updatedMsg.getId(), updatedMsg.getContent(), updatedMsg.getUpdatedAt());
+
+        // READSTATUS create TEST
+        ReadStatusCreateDto rsDto = new ReadStatusCreateDto(userId, pubRes.getId());
+        ReadStatusResponseDto rsRes = readStatusService.create(rsDto);
+
+        System.out.println("\n-- READ‑STATUS create TEST --");
+        System.out.printf("id=%s, user=%s, channel=%s, readAt=%s%n",
+                rsRes.getId(), rsRes.getUserId(), rsRes.getChannelId(), rsRes.getReadAt());
 
     }
 }

@@ -20,11 +20,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BasicReadStatusService implements ReadStatusService {
-    UserRepository userRepository;
-    ChannelRepository channelRepository;
-    ReadStatusRepository readStatusRepository;
+    private final UserRepository userRepository;
+    private final ChannelRepository channelRepository;
+    private final ReadStatusRepository readStatusRepository;
 
-    ReadStatusMapper readStatusMapper;
+    private final ReadStatusMapper readStatusMapper;
 
     @Override
     public ReadStatusResponseDto create(ReadStatusCreateDto dto) {
