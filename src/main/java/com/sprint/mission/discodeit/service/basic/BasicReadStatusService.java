@@ -43,6 +43,15 @@ public class BasicReadStatusService implements ReadStatusService {
         return readStatusMapper.toDto(readStatus);
     }
 
+    @Override
+    public ReadStatusResponseDto find(UUID id) {
+
+        ReadStatus readStatus = readStatusRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("ReadStatus with id " + id + " not found"));
+
+        return readStatusMapper.toDto(readStatus);
+    }
+
     /*public void updateReadAt(Instant newReadTime) {
         if(newReadTime.isAfter(this.readAt)) {
             this.readAt = newReadTime;

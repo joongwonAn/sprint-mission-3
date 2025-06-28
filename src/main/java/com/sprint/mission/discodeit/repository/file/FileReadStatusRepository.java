@@ -116,4 +116,21 @@ public class FileReadStatusRepository implements ReadStatusRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public Optional<ReadStatus> findById(UUID id) {
+        Path path = resolvePath(id);
+        if (Files.exists(path)) {
+            try (
+                    FileInputStream fis = new FileInputStream(path.toFile());
+                    ObjectInputStream ois = new ObjectInputStream(fis)
+            ) {
+                ReadStatus rs = (ReadStatus) ois.readObject();
+                return Optional.ofNullable(rs);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return Optional.empty();
+    }
 }
