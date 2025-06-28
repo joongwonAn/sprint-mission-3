@@ -17,8 +17,6 @@ import java.util.UUID;
 public class JavaApplication {
 
     public static void main(String[] args) {
-
-        // 매퍼 및 리포지토리 초기화
         UserMapper userMapper = new UserMapper();
         BinaryContentMapper binaryContentMapper = new BinaryContentMapper();
         ChannelMapper channelMapper = new ChannelMapper();
@@ -32,7 +30,6 @@ public class JavaApplication {
         MessageRepository messageRepository = new FileMessageRepository();
         ReadStatusRepository readStatusRepo = new FileReadStatusRepository();
 
-        // 서비스 초기화
         UserService userService = new BasicUserService(
                 userRepository,
                 userStatusRepository,
@@ -268,13 +265,31 @@ public class JavaApplication {
         System.out.printf("msgId=%s, content=%s, updatedAt=%s%n",
                 updatedMsg.getId(), updatedMsg.getContent(), updatedMsg.getUpdatedAt());
 
-        // READSTATUS create TEST
+        // ReadStatus create TEST
         ReadStatusCreateDto rsDto = new ReadStatusCreateDto(userId, pubRes.getId());
         ReadStatusResponseDto rsRes = readStatusService.create(rsDto);
 
         System.out.println("\n-- READ‑STATUS create TEST --");
-        System.out.printf("id=%s, user=%s, channel=%s, readAt=%s%n",
-                rsRes.getId(), rsRes.getUserId(), rsRes.getChannelId(), rsRes.getReadAt());
+        System.out.printf("id=%s, user=%s, channel=%s, readAt=%s%n", rsRes.getId(), rsRes.getUserId(), rsRes.getChannelId(), rsRes.getReadAt());
+
+        // ReadStatus find TEST
+        ReadStatusResponseDto foundRead = readStatusService.find(rsRes.getId());
+
+        System.out.println("\n-- READ STATUS 조회 (find) --");
+        System.out.println("ID: " + foundRead.getId());
+        System.out.println("User ID: " + foundRead.getUserId());
+        System.out.println("Channel ID: " + foundRead.getChannelId());
+        System.out.println("읽은 시각: " + foundRead.getReadAt());
+
+
+        System.out.println("\n-- 특정 사용자 ReadStatus 전체 조회 --");
+        List<ReadStatusResponseDto> readStatusList = readStatusService.findAllByUserId(userId);
+        for (ReadStatusResponseDto dto : readStatusList) {
+            System.out.println("→ ID: " + dto.getId()
+                    + ", userId: " + dto.getUserId()
+                    + ", channelId: " + dto.getChannelId()
+                    + ", readAt: " + dto.getReadAt());
+        }
 
     }
 }

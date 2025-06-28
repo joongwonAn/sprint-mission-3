@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.service.ReadStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,6 +51,17 @@ public class BasicReadStatusService implements ReadStatusService {
                 .orElseThrow(() -> new NoSuchElementException("ReadStatus with id " + id + " not found"));
 
         return readStatusMapper.toDto(readStatus);
+    }
+
+    @Override
+    public List<ReadStatusResponseDto> findAllByUserId(UUID userId) {
+
+        getUserOrThrow(userId);
+        
+        return readStatusRepository.findAllByUserId(userId)
+                .stream()
+                .map(readStatusMapper::toDto)
+                .toList();
     }
 
     /*public void updateReadAt(Instant newReadTime) {
