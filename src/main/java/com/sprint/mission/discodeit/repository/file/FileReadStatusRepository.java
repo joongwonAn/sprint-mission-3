@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -89,4 +90,30 @@ public class FileReadStatusRepository implements ReadStatusRepository {
         }
     }
 
+    @Override
+    public Optional<ReadStatus> findByUserIdAndChannelId(UUID userId, UUID channelId) {
+
+        return findAll().stream()
+                .filter(rs -> rs.getUserId().equals(userId) && rs.getChannelId().equals(channelId))
+                .findFirst();
+    }
+
+    @Override
+    public List<ReadStatus> findAll() {
+        try {
+            return Files.list(DIRECTORY)
+                    .filter(path -> path.toString().endsWith(EXTENSION))
+                    .map(path -> {
+                        try (FileInputStream fis  = new FileInputStream(path.toFile());
+                             ObjectInputStream ois = new ObjectInputStream(fis)) {
+                            return (ReadStatus) ois.readObject();
+                        } catch (IOException | ClassNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
