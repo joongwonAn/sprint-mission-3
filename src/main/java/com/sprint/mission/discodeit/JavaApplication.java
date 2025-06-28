@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit;
 import com.sprint.mission.discodeit.dto.*;
 import com.sprint.mission.discodeit.entity.BinaryContentType;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.*;
 import com.sprint.mission.discodeit.repository.*;
@@ -291,5 +292,13 @@ public class JavaApplication {
                     + ", readAt: " + dto.getReadAt());
         }
 
+        // ReadStatus update TEST
+        System.out.println("\n-- READ STATUS 업데이트 테스트 --");
+        ReadStatusUpdateDto RsUpdateDto = new ReadStatusUpdateDto(
+                rsRes.getId(),
+                rsRes.getReadAt().plusSeconds(300) // 기존보다 5분 뒤
+        );
+        ReadStatus updatedRs = readStatusService.update(RsUpdateDto);
+        System.out.printf("업데이트된 readAt=%s%n", updatedRs.getReadAt());
     }
 }

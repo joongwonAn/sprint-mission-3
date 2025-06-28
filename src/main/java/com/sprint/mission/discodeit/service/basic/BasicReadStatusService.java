@@ -81,6 +81,14 @@ public class BasicReadStatusService implements ReadStatusService {
         return readStatusRepository.save(readStatus);
     }
 
+    @Override
+    public void delete(UUID id) {
+
+        getReadStatusOrThrow(id);
+
+        readStatusRepository.deleteById(id);
+    }
+
     // 중복 제거용 private method
     private User getUserOrThrow(UUID userId) {
 
@@ -97,4 +105,5 @@ public class BasicReadStatusService implements ReadStatusService {
         return readStatusRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("ReadStatus with id " + id + " not found"));
     }
+
 }
